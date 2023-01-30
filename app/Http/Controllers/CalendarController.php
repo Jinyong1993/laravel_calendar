@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -27,21 +28,76 @@ class CalendarController extends BaseController
             }
         }
 
+        $select_query = $this->select($year, $month);
 
         $data = array(
             'year' => $year,
             'month' => $month,
+            'select_query' => $select_query,
         );
 
         return view('calendar.calendar_view', $data);
     }
 
-    public function update(Request $request)
-    {
-        var_dump($request->kkkkday);
+    public function select($year, $month)
+    {       
+        $query = array();
+
+        // フォメット　01,02...12
+        $month = sprintf('%02d', $month);
+
+        $first_date = "$year-$month-01";
+        $time_stamp = strtotime($first_date);
+        $last_date = date('Y-m-t', $time_stamp);
+
+        $selects = Event::where('user_id', auth()->user()->id)
+                        ->where('date_from', '<=', $last_date)
+                        ->where('date_to', '>=', $first_date)
+                        ->get();
+        
+        foreach($selects as $select){
+            if($select->date_from <= $first_date){
+                $from = $first_date; // 1
+            } else {
+                $from = $select->date_from;
+            }
+
+            if($select->date_to <= $last_date){
+                $to = $select->date_to;
+            } else {
+                $to = $last_date;
+            }
+
+            $from = date('d', strtotime($from));
+            $to = date('d', strtotime($to));
+
+            // 配列生成
+            $day_range = range($from, $to);
+
+            foreach($day_range as $day){
+                $query[$day][] = $select;
+            }
+        }
+        return $query;
     }
 
-    private function date_validate($year, $month){
+    public function update(Request $request)
+    {
+        $event = new Event();
 
+        $event->user_id = auth()->user()->id;
+        $event->date_from = $request->date_from;
+        $event->date_to = $request->date_to;
+        $event->title = $request->title;
+        $event->text = $request->text;
+        $event->tag_id = $request->tag_id ?? 0;
+
+        $event->save();
+
+        $response = array(
+            'success' => true
+        );
+
+        return json_encode($response);
     }
 }

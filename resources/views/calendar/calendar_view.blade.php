@@ -22,87 +22,90 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03">
-          <span class="navbar-toggler-icon"></span>
-      </button>
-      <a class="navbar-brand" href="{{ route('calendar.index', ['year' => $year, 'month' => $month]) }}">カレンダー</a>
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-              </li>
-              <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-              </li>
-              <li class="nav-item">
-              <a class="nav-link disabled">Disabled</a>
-              </li>
-          </ul>
-      </div>
-      <form class="navbar-form navbar-left row" method="GET" action="{{ route('calendar.index', ['year' => $year, 'month' => $month]) }}">
-          <div class="col-auto dropdown">
-              <button type="button" 
-                      class="btn btn-secondary btn-sm dropdown-toggle" 
-                      id="my_color_show" 
-                      data-bs-toggle="dropdown">マイカラー</button>
-              <ul class="dropdown-menu">
-                  <li class="dropdown-item">
-                      <label>
-                          <input type="checkbox"
-                                 class="my_color_chk"
-                                 value="<?php ?>"
-                                 checked>&nbsp;<?php ?>
-                      </label>
-                  </li>
-              </ul>
-          </div>
-          <div class="col-auto">
-			<?php if($month == 1) : ?>
-				<a class="btn btn-secondary btn-sm" href="{{ route('calendar.index', ['year' => ($year-1), 'month' => '12']) }}" role="button">先月</a>
-			<?php else : ?>
-				<a class="btn btn-secondary btn-sm" href="{{ route('calendar.index', ['year' => $year, 'month' => ($month-1)]) }}">先月</a>
-			<?php endif ?>
-			</div>
-			<div class="col-auto">
-			<?php if($month == 12) : ?>
-				<a class="btn btn-secondary btn-sm" href="{{ route('calendar.index', ['year' => ($year+1), 'month' => '1']) }}">来月</a>
-			<?php else : ?>
-				<a class="btn btn-secondary btn-sm" href="{{ route('calendar.index', ['year' => $year, 'month' => ($month+1)]) }}">来月</a>
-			<?php endif ?>
-			</div>
-          <div class="col-auto">
-              <input type="text" 
-                     id="year_search" 
-                     name="year" 
-                     value="{{$year}}" 
-                     class="date form-control form-control-sm" 
-                     placeholder="年" 
-                     autocomplete="off">
-          </div>
-          <div class="col-auto">
-              <input type="text" 
-                     id="month_search" 
-                     name="month" 
-                     value="{{$month}}" 
-                     class="date form-control form-control-sm" 
-                     placeholder="月" 
-                     autocomplete="off">
-          </div>
-          <div class="col-auto">
-              <button type="submit" id="search" class="btn btn-secondary btn-sm">検索</button>
-          </div>
-          <div class="col-auto">
-              <div class="nav navbar-nav navbar-left">
-                <h3>様</h3>
-              </div>
-          </div>
-          <div class="col-auto">
-              <a class="btn btn-danger btn-sm" href="{{ route('login') }}">ログアウト</a>
-          </div>
-          <div class="col-auto">
-          <a class="btn btn-info btn-sm" href="#"> 会員情報</a>
-          </div>
-      </form>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="{{ route('calendar.index', ['year' => $year, 'month' => $month]) }}">カレンダー</a>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link disabled">Disabled</a>
+            </li>
+        </ul>
+    </div>
+    <form class="navbar-form navbar-left row" method="GET" action="{{ route('calendar.index', ['year' => $year, 'month' => $month]) }}">
+        <div class="col-auto dropdown">
+            <button type="button" 
+                    class="btn btn-secondary btn-sm dropdown-toggle" 
+                    id="my_color_show" 
+                    data-bs-toggle="dropdown">マイカラー</button>
+            <ul class="dropdown-menu">
+                <li class="dropdown-item">
+                    <label>
+                        <input type="checkbox"
+                                class="my_color_chk"
+                                value="<?php ?>"
+                                checked>&nbsp;<?php ?>
+                    </label>
+                </li>
+            </ul>
+        </div>
+        <div class="col-auto">
+            <?php if($month == 1) : ?>
+                <a class="btn btn-secondary btn-sm" href="{{ route('calendar.index', ['year' => ($year-1), 'month' => '12']) }}" role="button">先月</a>
+            <?php else : ?>
+                <a class="btn btn-secondary btn-sm" href="{{ route('calendar.index', ['year' => $year, 'month' => ($month-1)]) }}">先月</a>
+            <?php endif ?>
+            </div>
+            <div class="col-auto">
+            <?php if($month == 12) : ?>
+                <a class="btn btn-secondary btn-sm" href="{{ route('calendar.index', ['year' => ($year+1), 'month' => '1']) }}">来月</a>
+            <?php else : ?>
+                <a class="btn btn-secondary btn-sm" href="{{ route('calendar.index', ['year' => $year, 'month' => ($month+1)]) }}">来月</a>
+            <?php endif ?>
+            </div>
+        <div class="col-auto">
+            <input type="text" 
+                    id="year_search" 
+                    name="year" 
+                    value="{{$year}}" 
+                    class="date form-control form-control-sm" 
+                    placeholder="年" 
+                    autocomplete="off">
+        </div>
+        <div class="col-auto">
+            <input type="text" 
+                    id="month_search" 
+                    name="month" 
+                    value="{{$month}}" 
+                    class="date form-control form-control-sm" 
+                    placeholder="月" 
+                    autocomplete="off">
+        </div>
+        <div class="col-auto">
+            <button type="submit" id="search" class="btn btn-secondary btn-sm">検索</button>
+        </div>
+        <div class="col-auto">
+            <div class="nav navbar-nav navbar-left">
+                <h3>{{auth()->user()->name}} 様</h3>
+            </div>
+        </div>
+        <div class="col-auto">
+        <a class="btn btn-info btn-sm" href="#">会員情報</a>
+        </div>
+    </form>
+    <form method="post" action="{{ route('logout') }}">
+        @csrf
+        <div class="col-auto">
+            <button calss="btn btn-danger btn-sm" type="submit">ログアウト</button>
+        </div>
+    </form>
   </div>
 </nav>
 
@@ -110,6 +113,14 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
         <input type="text" id="year_ajax" name="year" value="{{$year}}"><input type="text" id="month_ajax" name="month" value="{{$month}}">
     
     <table class="table" id="calendar">
+        <?php
+        $first = "$year/$month/1";
+        $time_stamp = strtotime($first);
+        $total_day = date("t", $time_stamp);
+
+        $start_day_week = (int) date("w", $time_stamp);
+        $total_week = (int) ceil(($total_day + $start_day_week) / 7);
+        ?>
         <thead>
             <tr>
                 <th style="color:red">日&nbsp;<input class="chk_date" data-weekday="Sunday" type="checkbox"/></th>
@@ -137,7 +148,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
         <?php
         for($j=0; $j<7; $j++){
             $day_week = date("l", strtotime("$year/$month/$day"));
-            $result = isset($select[$day]) ? $select[$day] : null;
+            $query = isset($select_query[$day]) ? $select_query[$day] : null;
         ?>
             <?php if (($day > 1 || $j >= $start_day_week) && ($total_day >= $day)) : ?>
                 <td>
@@ -154,7 +165,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                         <?php endif ?>
                         <div class="ps-2">
                             <input type="checkbox" 
-                                   data-weekday="$day_week ?>" 
+                                   data-weekday="{{$day_week}}" 
                                    class="chk pl-2" 
                                    name="check_test" 
                                    value="{{$day}}"/>
@@ -167,14 +178,14 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                             data-bs-target=".plus">+
                     </button><br>
                 </div>
-                <?php if($result) : ?>
-                <?php foreach($result as $row) : ?>
+                <?php if($query) : ?>
+                <?php foreach($query as $row) : ?>
                     <div>
                         <input type="button" 
                         class="title"
-                        data-color="<?php  ?>"
-                        data-id="<?php  ?>" 
-                        value="<?php  ?>" 
+                        tag_id="<?php  ?>"
+                        event_id="{{$row->event_id}}" 
+                        value="{{$row->title}}"
                         data-bs-toggle="modal" 
                         data-bs-target=".plus" 
                         style="background-color:<?php ?>"/>
@@ -230,6 +241,25 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
 			<div class="modal-body">
                 <table class="table">
                     <tbody>
+                        <tr>
+                            <th>期間</th>
+                            <td>
+                                <input type="text" 
+                                        id="date_from" 
+                                        name="date_from" 
+                                        value="" 
+                                        class="date form-control form-control-sm" 
+                                        placeholder="期間" 
+                                        autocomplete="on"> ~ 
+                                <input type="text" 
+                                        id="date_to" 
+                                        name="date_to" 
+                                        value="" 
+                                        class="date form-control form-control-sm" 
+                                        placeholder="期間"
+                                        autocomplete="off">
+                            </td>
+                        </tr>
                         <tr>
                             <th>予定</th>
                             <td>
@@ -448,6 +478,15 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
             })
         });
 
+        $("#date_from").datepicker( {
+            language: "ja",
+            format: "yyyy/mm/dd"
+        });
+        $("#date_to").datepicker( {
+            language: "ja",
+            format: "yyyy/mm/dd"
+        });
+
         $("#year_search").datepicker( {
             language: "ja",
             minViewMode: 2,
@@ -597,19 +636,29 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
         $(".plus_button").click(function (){
             $("#plus_delete").hide();
 			var plus_position = $(this).closest('td').find(':checkbox[name=check_test]').val()
-			
+			var year = $('#year_ajax').val()
+			var month = $('#month_ajax').val()
+
+            if(month < 10){
+                month = '0'+month
+            }
+            if(plus_position < 10){
+                plus_position = '0'+plus_position
+            }
+
+            $("#date_from").datepicker('update', year+"/"+month+"/"+plus_position)
+            $("#date_to").datepicker('update', year+"/"+month+"/"+plus_position)
             $("#plus_title").val(null)
             $("#plus_textarea").val(null)
             
             $("#plus_save").off("click")
             $("#plus_save").click(function (){
                 var plus_object = {
-                    year:$("#year_ajax").val(),
-                    month:$("#month_ajax").val(),
-                    day:plus_position,
+                    date_from:$("#date_from").val(),
+                    date_to:$("#date_to").val(),
                     title:$("#plus_title").val(),
                     text:$("#plus_textarea").val(),
-                    color_id:$("#my_color_list").val(),
+                    tag_id:$("#my_color_list").val(),
                 }
                 console.log(plus_object)
                 $.ajax({

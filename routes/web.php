@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 
 
-Route::prefix('/calendar')->name('calendar.')->group(function(){
+Route::prefix('/calendar')->name('calendar.')->middleware('auth')->group(function(){
     Route::get('/index', [CalendarController::class, 'index'])->name('index');
     Route::post('/update',[CalendarController::class, 'update'])->name('update');
 });
