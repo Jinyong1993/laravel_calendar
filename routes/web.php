@@ -23,5 +23,7 @@ Route::get('/', function () {
 
 Route::prefix('/calendar')->name('calendar.')->middleware('auth')->group(function(){
     Route::get('/index', [CalendarController::class, 'index'])->name('index');
+    Route::get('/select_ajax', [CalendarController::class, 'select_ajax'])->name('select_ajax');
+    Route::post('/delete_ajax', [CalendarController::class, 'delete_ajax'])->name('delete_ajax');
     Route::post('/update',[CalendarController::class, 'update'])->name('update');
 });

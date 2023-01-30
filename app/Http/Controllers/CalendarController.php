@@ -83,7 +83,11 @@ class CalendarController extends BaseController
 
     public function update(Request $request)
     {
-        $event = new Event();
+        if($request->event_id){
+            $event = Event::find($request->event_id);
+        } else {
+            $event = new Event();
+        }
 
         $event->user_id = auth()->user()->id;
         $event->date_from = $request->date_from;
@@ -93,6 +97,26 @@ class CalendarController extends BaseController
         $event->tag_id = $request->tag_id ?? 0;
 
         $event->save();
+
+        $response = array(
+            'success' => true
+        );
+
+        return json_encode($response);
+    }
+
+    public function select_ajax(Request $request)
+    {
+        $event = Event::find($request->event_id);
+
+        return json_encode($event);
+    }
+
+    public function delete_ajax(Request $request)
+    {
+        $event = Event::find($request->event_id);
+
+        $event->delete();
 
         $response = array(
             'success' => true

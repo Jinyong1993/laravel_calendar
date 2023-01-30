@@ -134,12 +134,12 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
         </thead>
     
         <tbody>
-        <?php
+        @php
         $day = 1;
         $today = date("Y-n");
         $today1 = date("d");
         $this_month = strtotime($today) == strtotime("$year-$month");
-        ?>
+        @endphp
     
     <?php
     for($i=0; $i<$total_week; $i++){
@@ -183,8 +183,8 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                     <div>
                         <input type="button" 
                         class="title"
-                        tag_id="<?php  ?>"
-                        event_id="{{$row->event_id}}" 
+                        data-color="<?php  ?>"
+                        data-id="{{$row->event_id}}" 
                         value="{{$row->title}}"
                         data-bs-toggle="modal" 
                         data-bs-target=".plus" 
@@ -640,10 +640,10 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
 			var month = $('#month_ajax').val()
 
             if(month < 10){
-                month = '0'+month
+                month = '0' + month
             }
             if(plus_position < 10){
-                plus_position = '0'+plus_position
+                plus_position = '0' + plus_position
             }
 
             $("#date_from").datepicker('update', year+"/"+month+"/"+plus_position)
@@ -681,18 +681,21 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
 
         $(".title").click(function(){
 			var day = $(this).closest('td').find(':checkbox[name=check_test]').val()
-            var id = $(this).data("id")
+            var event_id = $(this).data("id")
+            console.log(event_id)
 
             var id_object = {
-                id:$(this).data("id")
+                event_id:$(this).data("id")
             }
             
             $.ajax({
-                url: "title_ajax_controller",
+                url: "select_ajax",
                 type: "get",
                 data: id_object,
                 dataType: "json"
             }).done(function(data) {
+                $("#date_from").val(data.date_from);
+                $("#date_to").val(data.date_to);
                 $("#plus_title").val(data.title);
                 $("#plus_textarea").val(data.text);
                 $("#my_color_list").val(data.color_id);
@@ -702,50 +705,54 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
             $("#plus_delete").off('click')
             $("#plus_save").click(function (){
                 var plus_object = {
-                    id:id,
-                    year:$("#year_ajax").val(),
-                    month:$("#month_ajax").val(),
-                    day:day,
+                    event_id:event_id,
+                    date_from:$("#date_from").val(),
+                    date_to:$("#date_to").val(),
                     title:$("#plus_title").val(),
                     text:$("#plus_textarea").val(),
-                    color_id:$("#my_color_list").val(),
+                    tag_id:$("#my_color_list").val(),
                 }
-
                 $.ajax({
-                    url: "plus_ajax_controller",
+                    url: "update",
                     type: "post",
                     data: plus_object,
                     dataType: "json",
-                    
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    }
                 }).done(function(data) {
                     if(data.success){
                         location.reload()
                     } else {
                         alert(data.error)
                     }
-                })
+                });
             });
 
             $("#plus_delete").click(function(){
                 var plus_object = {
-                    id:id,
-                    year:$("#year_ajax").val(),
-                    month:$("#month_ajax").val(),
-                    day:day,
+                    event_id:event_id,
+                    date_from:$("#date_from").val(),
+                    date_to:$("#date_to").val(),
                     title:$("#plus_title").val(),
                     text:$("#plus_textarea").val(),
-                    color_id:$("#plus_color").val(),
+                    tag_id:$("#my_color_list").val(),
                 }
-
                 $.ajax({
                     url: "delete_ajax",
                     type: "post",
                     data: plus_object,
-                    dataType: "json"
+                    dataType: "json",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    }
                 }).done(function(data) {
-                    location.reload()
-                    alert("処理しました。")
-                })
+                    if(data.success){
+                        location.reload()
+                    } else {
+                        alert(data.error)
+                    }
+                });
             });
         });
 
