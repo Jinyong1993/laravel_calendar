@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,11 +20,13 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-
+Route::prefix('/auth')->name('auth.')->middleware('auth')->group(function(){
+    Route::get('/user_info', [Member::class, 'user_info'])->name('user_info');
+    Route::post('/user_update', [Member::class, 'user_update'])->name('user_update');
+});
 
 Route::prefix('/calendar')->name('calendar.')->middleware('auth')->group(function(){
     Route::get('/index', [CalendarController::class, 'index'])->name('index');
-    Route::get('/select_ajax', [CalendarController::class, 'select_ajax'])->name('select_ajax');
     Route::get('/select_ajax', [CalendarController::class, 'select_ajax'])->name('select_ajax');
     Route::get('/color_select_ajax', [CalendarController::class, 'color_select_ajax'])->name('color_select_ajax');
     Route::get('/search_ajax', [CalendarController::class, 'search_ajax'])->name('search_ajax');

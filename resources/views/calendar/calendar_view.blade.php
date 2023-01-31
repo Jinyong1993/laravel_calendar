@@ -99,7 +99,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
             </div>
         </div>
         <div class="col-auto">
-        <a class="btn btn-info btn-sm" href="#">会員情報</a>
+        <a class="btn btn-info btn-sm" href="{{route('auth.user_info')}}">会員情報</a>
         </div>
     </form>
     <form method="post" action="{{ route('logout') }}">
