@@ -46,14 +46,16 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                     id="my_color_show" 
                     data-bs-toggle="dropdown">マイカラー</button>
             <ul class="dropdown-menu">
+                @php foreach($tag_query as $row) : @endphp
                 <li class="dropdown-item">
                     <label>
                         <input type="checkbox"
                                 class="my_color_chk"
-                                value="<?php ?>"
-                                checked>&nbsp;<?php ?>
+                                value="{{$row->tag_id}}"
+                                checked>&nbsp;{{$row->tag_name}}
                     </label>
                 </li>
+                @php endforeach @endphp
             </ul>
         </div>
         <div class="col-auto">
@@ -162,7 +164,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                         <?php endif ?>
                         <?php if(($today1 == $day) && ($this_month)) : ?>
                             <span style="color:red" id="today_highlight">本日</span>
-                        <?php endif ?>
+                        <?php endif ?>  
                         <div class="ps-2">
                             <input type="checkbox" 
                                    data-weekday="{{$day_week}}" 
@@ -183,12 +185,12 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                     <div>
                         <input type="button" 
                         class="title"
-                        data-color="<?php  ?>"
+                        data-color="{{$row->tag_id}}"
                         data-id="{{$row->event_id}}" 
                         value="{{$row->title}}"
                         data-bs-toggle="modal" 
                         data-bs-target=".plus" 
-                        style="background-color:<?php ?>"/>
+                        style="background-color:{{$row->tag_color}}"/>
                     </div>
                 <?php endforeach ?>
                 <?php endif ?>
@@ -208,13 +210,6 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
     </tfoot>
     </table>
     <input type="checkbox" id="check_all"/>
-	<button type="button" 
-            id="chk_plus" 
-            class="btn btn-success" 
-            data-bs-toggle="modal" 
-            data-bs-target=".plus">追加
-    </button>
-	<button type="button" id="del" class="btn btn-danger">削除</button>
 
 	<button type="button" 
             class="btn btn-primary" 
@@ -277,7 +272,11 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                             <td>
                                 <select class="form-select" id="my_color_list">
                                     <option value="" selected>マイカラー</option>
-                                        <option value="">
+                                    <?php foreach($tag_query as $row) : ?>
+                                        <option value="{{$row->tag_id}}">
+                                            {{$row->tag_name}}
+                                        </option>
+                                    <?php endforeach ?>
                                     </option>
                                 </select>
                             </td>
@@ -312,8 +311,11 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                 <input type="text" class="form-control" id="text_search">
                 <select class="form-select" id="my_color_search_list">
                     <option value="" selected>マイカラー</option>
-                        <option value="">
+                    <?php foreach($tag_query as $row) : ?>
+                        <option value="{{$row->tag_id}}">
+                            {{$row->tag_name}}
                         </option>
+                    <?php endforeach ?>
                 </select>
                 <button class="btn btn-secondary" id="text_search_input"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> 入力</button>
             </div>
@@ -386,8 +388,11 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                         <td>
                             <select class="form-select" id="my_color_edit_list">
                                 <option value="" selected>新規作成</option>
-                                    <option value="">
+                                <?php foreach($tag_query as $row) : ?>
+                                    <option value="{{$row->tag_id}}">
+                                        {{$row->tag_name}}
                                     </option>
+                                <?php endforeach ?>
                             </select>
                         </td>
                     </tr>
@@ -398,7 +403,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
         <div class="modal-footer">
             <button id="color_edit_del" type="button" class="btn btn-danger">削除</button>
             <button id="color_edit_cancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
-            <button id="color_edit_save" type="button" class="btn btn-success">保存</button>
+            <button id="tag_edit_save" type="button" class="btn btn-success">保存</button>
         </div>
     </div>
   </div>
@@ -575,35 +580,37 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
         // });
 
         $("#my_color_edit_list").on("change", function(){
-            var color_id_object = {
-                color_id:$("#my_color_edit_list").val(),
+            var tag_id_object = {
+                tag_id:$("#my_color_edit_list").val(),
             }
 
             $.ajax({
-                url: "my_color_ajax",
+                url: "color_select_ajax",
                 type: "get",
-                data: color_id_object,
+                data: tag_id_object,
                 dataType: "json"
             }).done(function(data){
-                console.log(data)
-                $("#color_edit_name").val(data.color_name)
-                $("#color_edit_note").val(data.color_note)
+                $("#color_edit_name").val(data.tag_name)
+                $("#color_edit_note").val(data.tag_note)
             });
         });
 
-        $("#color_edit_save").click(function(){
-            var color_edit_object = {
-                color_id:$("#my_color_edit_list").val(),
-                color_name:$("#color_edit_name").val(),
-                color_note:$("#color_edit_note").val(),
-                color_color:$("#color_edit_list").val(),
+        $("#tag_edit_save").click(function(){
+            var tag_edit_object = {
+                tag_id:$("#my_color_edit_list").val(),
+                tag_name:$("#color_edit_name").val(),
+                tag_note:$("#color_edit_note").val(),
+                tag_color:$("#color_edit_list").val(),
             }
 
             $.ajax({
-                url: "color_edit_ajax",
+                url: "color_update",
                 type: "post",
-                data: color_edit_object,
-                dataType: "json"
+                data: tag_edit_object,
+                dataType: "json",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                }
             }).done(function(data) {
                 console.log(data)
                 if(data.success){
@@ -615,15 +622,18 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
         });
 
         $("#color_edit_del").click(function(){
-            var color_del_object = {
-                color_id:$("#my_color_edit_list").val(),
+            var tag_del_object = {
+                tag_id:$("#my_color_edit_list").val(),
             }
 
             $.ajax({
-                url: "color_del_ajax",
+                url: "color_delete_ajax",
                 type: "post",
-                data: color_del_object,
-                dataType: "json"
+                data: tag_del_object,
+                dataType: "json",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                }
             }).done(function(data) {
                 if(data.success){
                     location.reload()
@@ -763,20 +773,23 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
 
             var search_object = {
                 text:$("#text_search").val(),
-                color_id:$("#my_color_search_list").val(),
+                tag_id:$("#my_color_search_list").val(),
             }
 
             $.ajax({
-                url: "search_ajax_controller",
+                url: "search_ajax",
                 type: "get",
                 data: search_object,
                 dataType: "json" // data = JSON.parse(data)
             }).done(function(data) {
                 $.each(data, function(i,v){
-                    var date = new Date(v.year+"/"+v.month+"/"+v.day)
-                    var date_f = date.getFullYear() + "年" + (date.getMonth()+1) + "月" + date.getDate() + "日"
-                    var a = '<a href="https://localhost:10443/sample/index.php/Hello/calendar?year='+v.year+'&month='+v.month+'">link</a>'
-                    var tr = '<tr><td>'+date_f+''+'</td><td>'+v.color_name+'</td><td>'+v.text+'</td><td>'+a+'</td></tr>'
+                    var from = convert_japanese(v.date_from)
+                    var to = convert_japanese(v.date_to)
+                    var date = new Date(v.date_from)
+                    var year = date.getFullYear()
+                    var month = (date.getMonth()+1)
+                    var a = "<a href=index?year="+year+"&month="+month+">link</a>"
+                    var tr = '<tr><td>'+from+'~'+to+'</td><td>'+v.tag_name+'</td><td>'+v.text+'</td><td>'+a+'</td></tr>'
                     
                     $('#search_result').append(tr)
                 })
@@ -818,5 +831,12 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
         });
 
     });
+
+    function convert_japanese(date)
+    {
+        var convert_date = new Date(date)
+        var convert_result = convert_date.getFullYear() + "年" + (convert_date.getMonth()+1) + "月" + convert_date.getDate() + "日"
+        return convert_result
+    }
 </script>
 @endsection

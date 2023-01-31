@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Tag;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -29,17 +30,19 @@ class CalendarController extends BaseController
         }
 
         $select_query = $this->select($year, $month);
+        $tag_query = $this->color_select($request);
 
         $data = array(
             'year' => $year,
             'month' => $month,
             'select_query' => $select_query,
+            'tag_query' => $tag_query,
         );
 
         return view('calendar.calendar_view', $data);
     }
 
-    public function select($year, $month)
+    private function select($year, $month)
     {       
         $query = array();
 
@@ -50,9 +53,11 @@ class CalendarController extends BaseController
         $time_stamp = strtotime($first_date);
         $last_date = date('Y-m-t', $time_stamp);
 
-        $selects = Event::where('user_id', auth()->user()->id)
-                        ->where('date_from', '<=', $last_date)
-                        ->where('date_to', '>=', $first_date)
+        $selects = Event::where('event.user_id', auth()->user()->id)
+                        ->where('event.date_from', '<=', $last_date)
+                        ->where('event.date_to', '>=', $first_date)
+                        ->leftjoin('tag', 'tag.tag_id', '=', 'event.tag_id')
+                        ->select('event.*', 'tag.tag_id', 'tag.tag_color')
                         ->get();
         
         foreach($selects as $select){
@@ -84,9 +89,9 @@ class CalendarController extends BaseController
     public function update(Request $request)
     {
         if($request->event_id){
-            $event = Event::find($request->event_id);
+            $event = Event::find($request->event_id); // update
         } else {
-            $event = new Event();
+            $event = new Event(); // insert
         }
 
         $event->user_id = auth()->user()->id;
@@ -94,7 +99,7 @@ class CalendarController extends BaseController
         $event->date_to = $request->date_to;
         $event->title = $request->title;
         $event->text = $request->text;
-        $event->tag_id = $request->tag_id ?? 0;
+        $event->tag_id = $request->tag_id;
 
         $event->save();
 
@@ -114,9 +119,78 @@ class CalendarController extends BaseController
 
     public function delete_ajax(Request $request)
     {
-        $event = Event::find($request->event_id);
+        $event = Event::find($request->event_id); // primary key
 
         $event->delete();
+
+        $response = array(
+            'success' => true
+        );
+
+        return json_encode($response);
+    }
+
+    public function search_ajax(Request $request)
+    {
+        $keyword = $request->input('text');
+        $tag_id = $request->input('tag_id');
+
+        $search = Event::where('event.user_id', auth()->user()->id)
+                ->leftjoin('tag', 'tag.tag_id', '=', 'event.tag_id')
+                ->select('event.*', 'tag.tag_id','tag.tag_name' ,'tag.tag_color');
+
+        if(!empty($tag_id)){
+            $search->where('tag.tag_id', $tag_id);
+        }
+        if(!empty($keyword)){
+            $search->where('event.text', 'like', "%{$keyword}%");
+        }
+        $search_result = $search->get();
+        
+        return json_encode($search_result);
+    }
+
+    public function color_update(Request $request)
+    {
+        if($request->tag_id){
+            $tag = Tag::find($request->tag_id);
+        } else {
+            $tag = new Tag();
+        }
+
+        $tag->user_id = auth()->user()->id;
+        $tag->tag_name = $request->tag_name;
+        $tag->tag_note = $request->tag_note;
+        $tag->tag_color = $request->tag_color;
+
+        $tag->save();
+
+        $response = array(
+            'success' => true
+        );
+
+        return json_encode($response);
+    }
+
+    public function color_select(Request $request)
+    {
+        $select = Tag::where('user_id', auth()->user()->id)
+                    ->get();
+        return $select;
+    }
+
+    public function color_select_ajax(Request $request)
+    {
+        $tag = Tag::find($request->tag_id);
+
+        return json_encode($tag);
+    }
+
+    public function color_delete_ajax(Request $request)
+    {
+        $tag = Tag::find($request->tag_id);
+
+        $tag->delete();
 
         $response = array(
             'success' => true
