@@ -88,6 +88,20 @@ class CalendarController extends BaseController
 
     public function update(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'date_from' => 'required',
+            'date_to' => 'required',
+            'title' => 'required',
+        ]);
+
+        if($validator->fails()){
+            $error = $validator->errors();
+            $response = array(
+                'error' => implode('', $error->all()),
+            );
+            return $response;
+        }
+
         if($request->event_id){
             $event = Event::find($request->event_id); // update
         } else {
@@ -152,6 +166,19 @@ class CalendarController extends BaseController
 
     public function color_update(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'tag_name' => 'required',
+            'tag_color' => 'required',
+        ]);
+
+        if($validator->fails()){
+            $error = $validator->errors();
+            $response = array(
+                'error' => implode('', $error->all()),
+            );
+            return $response;
+        }
+
         if($request->tag_id){
             $tag = Tag::find($request->tag_id);
         } else {
@@ -166,7 +193,7 @@ class CalendarController extends BaseController
         $tag->save();
 
         $response = array(
-            'success' => true
+            'success' => true,
         );
 
         return json_encode($response);

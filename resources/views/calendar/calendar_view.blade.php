@@ -371,7 +371,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                         <th>カラー</th>
                         <td id="other_position">
                             <select class="form-select" id="color_edit_list">
-                                <option selected>カラーを選択する</option>
+                                <option value="" selected>カラーを選択する</option>
                                 <option value="#FF0000">レッド</option>
                                 <option value="#0000FF">ブルー</option>
                                 <option value="#008000">グリーン</option>
@@ -618,7 +618,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                 } else {
                     alert(data.error)
                 }
-            });
+            })
         });
 
         $("#color_edit_del").click(function(){
