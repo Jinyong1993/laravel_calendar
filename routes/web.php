@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BoardController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\Member;
 use Illuminate\Http\Request;
@@ -23,6 +24,18 @@ Route::get('/', function () {
 Route::prefix('/auth')->name('auth.')->middleware('auth')->group(function(){
     Route::get('/user_info', [Member::class, 'user_info'])->name('user_info');
     Route::post('/user_update', [Member::class, 'user_update'])->name('user_update');
+});
+
+Route::prefix('/board')->name('board.')->middleware('auth')->group(function(){
+    Route::get('/index', [BoardController::class, 'index'])->name('index');
+    Route::get('/content', [BoardController::class, 'content'])->name('content');
+    Route::get('/create_view', [BoardController::class, 'create_view'])->name('create_view');
+    Route::get('/comment_content', [BoardController::class, 'comment_content'])->name('comment_content');
+    Route::post('/create', [BoardController::class, 'create'])->name('create');
+    Route::post('/comment_update_ajax', [BoardController::class, 'comment_update_ajax'])->name('comment_update_ajax');
+    Route::post('/comment_create', [BoardController::class, 'comment_create'])->name('comment_create');
+    Route::post('/delete', [BoardController::class, 'delete'])->name('delete');
+    Route::post('/comment_delete', [BoardController::class, 'comment_delete'])->name('comment_delete');
 });
 
 Route::prefix('/calendar')->name('calendar.')->middleware('auth')->group(function(){

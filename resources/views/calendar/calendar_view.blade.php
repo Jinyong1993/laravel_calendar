@@ -29,7 +29,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="{{route('board.index')}}">掲示板</a>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
@@ -102,19 +102,19 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
         <a class="btn btn-info btn-sm" href="{{route('auth.user_info')}}">会員情報</a>
         </div>
     </form>
-    <form method="post" action="{{ route('logout') }}">
+    <div class="col-auto">
+        <form method="post" action="{{ route('logout') }}">
         @csrf
-        <div class="col-auto">
             <button calss="btn btn-danger btn-sm" type="submit">ログアウト</button>
-        </div>
-    </form>
+        </form>
+    </div>
   </div>
 </nav>
 
     <form method="POST" action="#">
         <input type="text" id="year_ajax" name="year" value="{{$year}}"><input type="text" id="month_ajax" name="month" value="{{$month}}">
     
-    <table class="table" id="calendar">
+    <table class="table table-bordered" id="calendar">
         <?php
         $first = "$year/$month/1";
         $time_stamp = strtotime($first);
@@ -670,7 +670,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                     text:$("#plus_textarea").val(),
                     tag_id:$("#my_color_list").val(),
                 }
-                console.log(plus_object)
+                
                 $.ajax({
                     url: "update",
                     type: "post",

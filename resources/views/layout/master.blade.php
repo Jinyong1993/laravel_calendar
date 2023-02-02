@@ -11,6 +11,7 @@
     @yield('script')
 </head>
 <body>
+    @yield('nav')
     @yield('content')
 </body>
 </html>
