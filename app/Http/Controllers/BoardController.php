@@ -11,22 +11,47 @@ class BoardController extends Controller
 {
     public function index(Request $request)
     {
+        //　ボードテーブルのカラムを取得
         $board_col = Schema::getColumnListing('board');
-        $result = in_array($request->sort, $board_col);
 
-        $board = Board::orderby(isset($request->sort) ? $request->sort : 'board_id', isset($request->order) ? $request->order : 'desc')->paginate(5);
-
-        if($result){
-            $board = Board::orderby($request->sort, $request->order)->paginate(5);
-            
-        } else {
-            return redirect()->back();
+        if($request->sort){
+            // テーブルのカラム名とマッチさせる
+            $sort_available = in_array($request->sort, $board_col);
+            // マッチされたのがなかったら、リターン
+            if(!$sort_available) {
+                return redirect()->back();
+            }
         }
+
+        // セレクトクエリー
+        $query = Board::select('board.*');
+        
+        // マッチされたのがあったら、並ばせる
+        if(isset($sort_available)) {
+            $query->orderby($request->sort, $request->order);
+        }
+
+        // 検索機能
+        if(isset($request->date_from)) {
+            // $query->where('', 'like', "%{$request->keyword_search}%");
+        }
+        if(isset($request->keyword_search)) {
+            $category_available = in_array($request->category, $board_col);
+            if(!$category_available){
+                return redirect()->back();
+            }
+            $query->where($request->category, 'like', "%{$request->keyword_search}%");
+        }
+
+        $board = $query->paginate(10);
+
         $data = array(
             'board' => $board,
+            'board_col' => $board_col,
             'sort' => $request->sort,
             'order' => $request->order,
         );
+        
         return view('board.board_view', $data);
     }
 

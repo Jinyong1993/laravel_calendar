@@ -19,15 +19,14 @@
             </li>
         </ul>
     </div>
-        <div class="col-auto">
-            <div class="nav navbar-nav navbar-left">
-                <h3>{{auth()->user()->name}} 様</h3>
-            </div>
+    <div class="col-auto">
+        <div class="nav navbar-nav navbar-left">
+            <h3>{{auth()->user()->name}} 様</h3>
         </div>
-        <div class="col-auto">
+    </div>
+    <div class="col-auto">
         <a class="btn btn-info btn-sm" href="{{route('auth.user_info')}}">会員情報</a>
-        </div>
-    </form>
+    </div>
     <form method="post" action="{{ route('logout') }}">
         @csrf
         <div class="col-auto">
@@ -39,6 +38,41 @@
 @endsection
 
 @section('content')
+<form action="{{route('board.index')}}" method="GET">
+    <select name="category" class="form-select" id="my_color_search_list">
+        <option value="{{$board_col[1]}}" selected>
+            タイトル
+        </option>
+        <option value="{{$board_col[2]}}">
+            内容
+        </option>
+        <option value="{{$board_col[3]}}">
+            作成者
+        </option>
+    </select>
+    <div class="col-auto p-2">
+        <input type="text" name="keyword_search"/>
+        <input type="submit" value="検索" class="btn btn-success btn-sm"/>
+    </div>
+</form>
+<form action="#" method="GET">
+    <div class="col-auto p-2">
+        <input type="text" 
+                id="date_from" 
+                name="date_from" 
+                value="" 
+                class="date form-control form-control-sm" 
+                placeholder="期間" 
+                autocomplete="on"> ~ 
+        <input type="text" 
+                id="date_to" 
+                name="date_to" 
+                value="" 
+                class="date form-control form-control-sm" 
+                placeholder="期間"
+                autocomplete="off">
+    </div>
+</form>
 <form method="get" action="{{route('board.index')}}" id="board_form">
 <table class="table table-hover">
     <thead>

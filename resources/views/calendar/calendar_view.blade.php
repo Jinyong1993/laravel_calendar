@@ -18,7 +18,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{route('board.index', ['sort' => 'board_id', 'order' => 'desc'])}}">掲示板</a>
+            <a class="nav-link active" aria-current="page" href="{{route('board.index')}}">掲示板</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{route('calendar.index')}}">カレンダー</a>
