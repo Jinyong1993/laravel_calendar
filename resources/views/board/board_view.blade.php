@@ -38,25 +38,20 @@
 </nav>
 @endsection
 
-@php
-$num = 0;
-@endphp
-
 @section('content')
-<form method="POST" action="#">
+<form method="get" action="{{route('board.index')}}" id="board_form">
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>番号</th>
-            <th>タイトル</th>
-            <th>作成者</th>
-            <th>作成日</th>
-            <th>修正日</th>
-            <th>アクセス数</th>
+            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('board_id', {{$sort == 'board_id' && $order != 'desc' ? 'true' : 'false'}})">番号</a></th>
+            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('title', {{$sort == 'title' && $order != 'desc' ? 'true' : 'false'}})">タイトル</a></th>
+            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('user_id', {{$sort == 'user_id' && $order != 'desc' ? 'true' : 'false'}})">作成者</a></th>
+            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('created_at', {{$sort == 'created_at' && $order != 'desc' ? 'true' : 'false'}})">作成日</a></th>
+            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('hit', {{$sort == 'hit' && $order != 'desc' ? 'true' : 'false'}})">アクセス数</a></th>
         </tr>
     </thead>
     <tbody>
-        @foreach ($select as $row)
+        @foreach ($board as $row)
         <tr>
             <th>{{$row->board_id}}</th>
             <td style="max-width:100px" class="text-truncate">
@@ -65,7 +60,6 @@ $num = 0;
                 </a>
             </td>
             <td>{{$row->user_id}}</td>
-            <td>{{$row->updated_at}}</td>
             <td>{{$row->created_at}}</td>
             <td>{{$row->hit}}</td>
         </tr>
@@ -76,7 +70,28 @@ $num = 0;
     </tfoot>
 </table>
 <hr/>
+<div class="p-2" style="text-align: right">
     <a type="button" href="{{route('board.create_view')}}" class="btn btn-success">作成</a>
-    <input type="submit" class="btn btn-danger" value="削除"/>
+</div>
 </form>
+<div class="page d-flex justify-content-center">{{ $board->appends(request()->query())->links() }}</div>
+@endsection
+
+@section('script')
+<script>
+    function sort(col_name, order, page)
+    {
+        var col_input = "<input type='hidden' name='sort' value='"+col_name+"'/>"
+        if(order){
+            var order_type = "<input type='hidden' name='order' value='desc'/>"
+        } else {
+            var order_type = "<input type='hidden' name='order' value='asc'/>"
+        }
+        $('#board_form').append(col_input)
+        $('#board_form').append(order_type)
+        $('#board_form').submit()
+    }
+
+    
+</script>
 @endsection

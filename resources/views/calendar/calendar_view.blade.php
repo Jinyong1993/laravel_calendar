@@ -9,17 +9,6 @@ $total_day = date("t", $time_stamp);
 $start_day_week = (int) date("w", $time_stamp);
 $total_week = (int) ceil(($total_day + $start_day_week) / 7);
 @endphp
-
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03">
@@ -29,10 +18,10 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{route('board.index')}}">掲示板</a>
+            <a class="nav-link active" aria-current="page" href="{{route('board.index', ['sort' => 'board_id', 'order' => 'desc'])}}">掲示板</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+                <a class="nav-link" href="{{route('calendar.index')}}">カレンダー</a>
             </li>
             <li class="nav-item">
             <a class="nav-link disabled">Disabled</a>

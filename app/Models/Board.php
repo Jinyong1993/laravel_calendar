@@ -10,6 +10,7 @@ class Board extends Model
 {
     protected $table = 'board';
     protected $primaryKey = 'board_id';
+    
     use SoftDeletes;
 
     // 1:n

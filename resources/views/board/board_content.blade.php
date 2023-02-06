@@ -60,6 +60,9 @@
 </div>
 </form>
 <hr/>
+@php
+$user_id = auth()->user()->id;
+@endphp
 @foreach($comment_select as $comment)
 <div class="comment_contents container">
     <input type="hidden" class="coment_id_hidden" value="{{$comment->comment_id}}"/>
@@ -81,12 +84,14 @@
         <div class="comment_space col-12 p-2" style="word-break:break-all;">
             <span>{{$comment->note}}</span>
         </div>
+        @if($user_id == $comment->user_id)
         <div class="input_space col-12 p-2" style="text-align:right;">
             <input type="button" class="comment_update_button btn btn-primary" value="修正"/>
             <button type="button" class="comment_delete_button btn btn-danger"  data-bs-toggle="modal" data-bs-target="#comment_delete_modal">
                 削除
             </button>
         </div>
+        @endif
     </div>
 </div>
 @endforeach
@@ -110,7 +115,7 @@
         削除
     </button>
 @endif
-<a type="button" href="{{route('board.index')}}" class="btn btn-secondary">戻る</a>
+<a type="button" href="{{route('board.index', ['sort' => 'board_id', 'order' => 'desc'])}}" class="btn btn-secondary">戻る</a>
 
 <!-- delete modal -->
 <div class="modal fade" id="delete_modal" tabindex="-1">
@@ -150,7 +155,7 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取り消し</button>
             <form method="POST" action="{{route('board.comment_delete')}}">
             @csrf
-                <input type="hidden" name="comment_id" value="{{$comment->comment_id}}"/>
+                <input type="hidden" name="comment_id" value="{{isset($comment->comment_id) ? $comment->comment_id : null}}"/>
                 <input type="submit" class="btn btn-danger" value="削除"/>
             </form>
         </div>

@@ -12,6 +12,20 @@
 </head>
 <body>
     @yield('nav')
+    @if ($errors->any())
+        <div class="alert bg-danger bg-gradient">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (session('flash_message'))
+        <div class="flash_message bg-success bg-gradient text-center py-3 my-0">
+            {{ session('flash_message') }}
+        </div>
+    @endif
     @yield('content')
 </body>
 </html>

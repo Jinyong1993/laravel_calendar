@@ -39,6 +39,15 @@
 @endsection
 
 @section('content')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <form method="POST" action="{{route('board.create')}}">
 <input type="hidden" name="board_id" value="{{isset($select->board_id) ? $select->board_id : null}}"/>
 @csrf
@@ -59,9 +68,15 @@
                 <textarea name="note" placeholder="内容を入力してください。">{{isset($select->note) ? $select->note : null}}</textarea>
             </td>
         </tr>
+        <tr>
+            <th>ファイル</th>
+            <td>
+                <input type="file" name="file"/>
+            </td>
+        </tr>
     </tbody>
 </table>
     <input type="submit" value="作成" class="btn btn-success"/>
-    <a type="button" href="{{route('board.index')}}" class="btn btn-light">取り消し</a>
+    <a type="button" href="{{route('board.index', ['sort' => 'board_id', 'order' => 'desc'])}}" class="btn btn-light">取り消し</a>
 </form>
 @endsection

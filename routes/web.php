@@ -28,6 +28,7 @@ Route::prefix('/auth')->name('auth.')->middleware('auth')->group(function(){
 
 Route::prefix('/board')->name('board.')->middleware('auth')->group(function(){
     Route::get('/index', [BoardController::class, 'index'])->name('index');
+    Route::get('/sort', [BoardController::class, 'sort'])->name('sort');
     Route::get('/content', [BoardController::class, 'content'])->name('content');
     Route::get('/create_view', [BoardController::class, 'create_view'])->name('create_view');
     Route::get('/comment_content', [BoardController::class, 'comment_content'])->name('comment_content');
