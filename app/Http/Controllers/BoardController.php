@@ -33,7 +33,7 @@ class BoardController extends Controller
 
         // 検索機能
         if(isset($request->date_from)) {
-            // $query->where('', 'like', "%{$request->keyword_search}%");
+
         }
         if(isset($request->keyword_search)) {
             $category_available = in_array($request->category, $board_col);
@@ -50,8 +50,10 @@ class BoardController extends Controller
             'board_col' => $board_col,
             'sort' => $request->sort,
             'order' => $request->order,
+            'category' => $request->category,
+            'keyword_search' => $request->keyword_search,
         );
-        
+
         return view('board.board_view', $data);
     }
 

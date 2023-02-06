@@ -52,36 +52,38 @@
     </select>
     <div class="col-auto p-2">
         <input type="text" name="keyword_search"/>
-        <input type="submit" value="検索" class="btn btn-success btn-sm"/>
     </div>
-</form>
-<form action="#" method="GET">
     <div class="col-auto p-2">
         <input type="text" 
-                id="date_from" 
-                name="date_from" 
-                value="" 
-                class="date form-control form-control-sm" 
-                placeholder="期間" 
-                autocomplete="on"> ~ 
+        id="date_from" 
+        name="date_from" 
+        value="" 
+        class="date form-control form-control-sm" 
+        placeholder="期間" 
+        autocomplete="on"> ~ 
         <input type="text" 
-                id="date_to" 
-                name="date_to" 
-                value="" 
-                class="date form-control form-control-sm" 
-                placeholder="期間"
-                autocomplete="off">
+        id="date_to" 
+        name="date_to" 
+        value="" 
+        class="date form-control form-control-sm" 
+        placeholder="期間"
+        autocomplete="off">
     </div>
+    <input type="submit" value="検索" class="btn btn-success btn-sm"/>
+    <input type="hidden" name="sort" value="{{$sort}}"/>
+    <input type="hidden" name="order" value="{{$order}}"/>
 </form>
 <form method="get" action="{{route('board.index')}}" id="board_form">
+    <input type="hidden" name="category" value="{{$category}}"/>
+    <input type="hidden" name="keyword_search" value="{{$keyword_search}}"/>
 <table class="table table-hover">
     <thead>
         <tr>
-            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('board_id', {{$sort == 'board_id' && $order != 'desc' ? 'true' : 'false'}})">番号</a></th>
-            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('title', {{$sort == 'title' && $order != 'desc' ? 'true' : 'false'}})">タイトル</a></th>
-            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('user_id', {{$sort == 'user_id' && $order != 'desc' ? 'true' : 'false'}})">作成者</a></th>
-            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('created_at', {{$sort == 'created_at' && $order != 'desc' ? 'true' : 'false'}})">作成日</a></th>
-            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('hit', {{$sort == 'hit' && $order != 'desc' ? 'true' : 'false'}})">アクセス数</a></th>
+            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('board_id', {{$sort == 'board_id' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">番号</a></th>
+            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('title', {{$sort == 'title' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">タイトル</a></th>
+            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('user_id', {{$sort == 'user_id' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">作成者</a></th>
+            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('created_at', {{$sort == 'created_at' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">作成日</a></th>
+            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('hit', {{$sort == 'hit' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">アクセス数</a></th>
         </tr>
     </thead>
     <tbody>
@@ -113,14 +115,16 @@
 
 @section('script')
 <script>
-    function sort(col_name, order, page)
+    function sort(col_name, order, category=null, keyword=null)
     {
         var col_input = "<input type='hidden' name='sort' value='"+col_name+"'/>"
+
         if(order){
             var order_type = "<input type='hidden' name='order' value='desc'/>"
         } else {
             var order_type = "<input type='hidden' name='order' value='asc'/>"
         }
+
         $('#board_form').append(col_input)
         $('#board_form').append(order_type)
         $('#board_form').submit()
