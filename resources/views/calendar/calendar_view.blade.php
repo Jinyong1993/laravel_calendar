@@ -435,8 +435,6 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
             $(':checkbox[name="check_test"]:checked').closest('td').find('.title').each(function(){
                 ids.push($(this).data('id'));
             });
-            console.log(days);
-            console.log(ids);
 
             var plus_object = {
                 id:ids,

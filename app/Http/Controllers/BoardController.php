@@ -58,7 +58,7 @@ class BoardController extends Controller
                 $query->where($request->category, 'like', "%{$request->keyword_search}%");
             }
         } else if(!$category_available){
-            // パラメターを操作され、一致しない場合
+            // URLパラメーターを触られ、一致しない場合
         } 
         
         $board = $query->paginate(10);
@@ -107,6 +107,10 @@ class BoardController extends Controller
     
     public function create(Request $request)
     {
+        if(empty($request->title) || empty($request->note)){
+            return redirect()->back()->withErrors('タイトルや内容欄に入力は必須です。');
+        }
+
         if($request->board_id){
             $board = Board::find($request->board_id);
         } else {

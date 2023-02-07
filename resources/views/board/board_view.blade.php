@@ -3,80 +3,97 @@
 @section('nav')
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{route('board.index')}}">掲示板</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="{{route('calendar.index')}}">カレンダー</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link disabled">Disabled</a>
-            </li>
-        </ul>
-    </div>
-    <div class="col-auto">
-        <div class="nav navbar-nav navbar-left">
-            <h3>{{auth()->user()->name}} 様</h3>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggler">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{{route('board.index')}}">掲示板</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="{{route('calendar.index')}}">カレンダー</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link disabled">Disabled</a>
+                </li>
+            </ul>
         </div>
-    </div>
-    <div class="col-auto">
-        <a class="btn btn-info btn-sm" href="{{route('auth.user_info')}}">会員情報</a>
-    </div>
-    <form method="post" action="{{ route('logout') }}">
-        @csrf
         <div class="col-auto">
-            <button calss="btn btn-danger btn-sm" type="submit">ログアウト</button>
+            <div class="nav navbar-nav navbar-left">
+                <h3>{{auth()->user()->name}} 様</h3>
+            </div>
         </div>
-    </form>
-  </div>
+        <div class="col-auto">
+            <a class="btn btn-info btn-sm" href="{{route('auth.user_info')}}">会員情報</a>
+        </div>
+        <form method="post" action="{{ route('logout') }}">
+            @csrf
+            <div class="col-auto">
+                <button calss="btn btn-danger btn-sm" type="submit">ログアウト</button>
+            </div>
+        </form>
+    </div>
 </nav>
 @endsection
 
 @section('content')
-<form action="{{route('board.index')}}" method="GET">
-    <select name="category" class="form-select" id="my_color_search_list">
-        <option value="" selected>
-            カテゴリー
-        </option>
-        <option value="{{$board_col[1]}}">
-            タイトル
-        </option>
-        <option value="{{$board_col[2]}}">
-            内容
-        </option>
-        <option value="{{$board_col[3]}}">
-            作成者
-        </option>
-    </select>
-    <div class="col-auto p-2">
-        <input type="text" name="keyword_search"/>
+<div class="accordion" id="search_accordion">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#search">
+                検索
+            </button>
+        </h2>
+        <div id="search" 
+            class="accordion-collapse collapse" 
+            data-bs-parent="#search_accordion">
+            <div class="accordion-body">
+                <form action="{{route('board.index')}}" method="GET">
+                    <select name="category" class="form-select" id="category">
+                        <option value="" selected>
+                            カテゴリー
+                        </option>
+                        <option value="{{$board_col[1]}}">
+                            タイトル
+                        </option>
+                        <option value="{{$board_col[2]}}">
+                            内容
+                        </option>
+                        <option value="{{$board_col[3]}}">
+                            作成者
+                        </option>
+                    </select>
+                    <div class="col-auto p-2">
+                        <input type="text" name="keyword_search" value="{{$keyword_search ?? null}}"/>
+                    </div>
+                    <div class="col-auto p-2">
+                        <input type="text" 
+                        id="date_from" 
+                        name="date_from" 
+                        value="{{$date_from ?? null}}" 
+                        class="date form-control form-control-sm" 
+                        placeholder="期間" 
+                        autocomplete="off"> ~ 
+                        <input type="text" 
+                        id="date_to" 
+                        name="date_to" 
+                        value="{{$date_to ?? null}}" 
+                        class="date form-control form-control-sm" 
+                        placeholder="期間"
+                        autocomplete="off">
+                    </div>
+                    <input type="submit" value="検索" class="btn btn-success btn-sm"/>
+                    <input type="hidden" name="sort" value="{{$sort}}"/>
+                    <input type="hidden" name="order" value="{{$order}}"/>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="col-auto p-2">
-        <input type="text" 
-        id="date_from" 
-        name="date_from" 
-        value="" 
-        class="date form-control form-control-sm" 
-        placeholder="期間" 
-        autocomplete="off"> ~ 
-        <input type="text" 
-        id="date_to" 
-        name="date_to" 
-        value="" 
-        class="date form-control form-control-sm" 
-        placeholder="期間"
-        autocomplete="off">
-    </div>
-    <input type="submit" value="検索" class="btn btn-success btn-sm"/>
-    <input type="hidden" name="sort" value="{{$sort}}"/>
-    <input type="hidden" name="order" value="{{$order}}"/>
-</form>
-
+</div>
 <form method="get" action="{{route('board.index')}}" id="board_form">
     <input type="hidden" name="date_from" value="{{$date_from}}"/>
     <input type="hidden" name="date_to" value="{{$date_to}}"/>
@@ -85,11 +102,71 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th><a type="button" class="sort_btn btn btn-light" onclick="sort('board_id', {{$sort == 'board_id' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">番号</a></th>
-                <th><a type="button" class="sort_btn btn btn-light" onclick="sort('title', {{$sort == 'title' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">タイトル</a></th>
-                <th><a type="button" class="sort_btn btn btn-light" onclick="sort('user_id', {{$sort == 'user_id' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">作成者</a></th>
-                <th><a type="button" class="sort_btn btn btn-light" onclick="sort('created_at', {{$sort == 'created_at' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">作成日</a></th>
-                <th><a type="button" class="sort_btn btn btn-light" onclick="sort('hit', {{$sort == 'hit' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">アクセス数</a></th>
+                <th>
+                    <a type="button" 
+                        class="sort_btn btn btn-light" 
+                        onclick="sort('board_id', 
+                                    {{$sort == 'board_id' && $order != 'desc' ? 'true' : 'false'}}, 
+                                    '{{isset($category) ? $category : null}}', 
+                                    '{{isset($keyword_search) ? $keyword_search : null}}')">番号</a>
+                    @if($order == 'desc' && $sort == 'board_id')
+                        <i class="bi bi-sort-down"></i>
+                    @else
+                        <i class="bi bi-sort-up-alt"></i>
+                    @endif
+                </th>
+                <th>
+                    <a type="button" 
+                        class="sort_btn btn btn-light" 
+                        onclick="sort('title', 
+                                    {{$sort == 'title' && $order != 'desc' ? 'true' : 'false'}}, 
+                                    '{{isset($category) ? $category : null}}', 
+                                    '{{isset($keyword_search) ? $keyword_search : null}}')">タイトル</a>
+                        @if($order == 'desc' && $sort == 'title')
+                            <i class="bi bi-sort-down"></i>
+                        @else
+                            <i class="bi bi-sort-up-alt"></i>
+                        @endif
+                </th>
+                <th>
+                    <a type="button" 
+                        class="sort_btn btn btn-light" 
+                        onclick="sort('user_id', 
+                                    {{$sort == 'user_id' && $order != 'desc' ? 'true' : 'false'}}, 
+                                    '{{isset($category) ? $category : null}}', 
+                                    '{{isset($keyword_search) ? $keyword_search : null}}')">作成者</a>
+                        @if($order == 'desc' && $sort == 'user_id')
+                            <i class="bi bi-sort-down"></i>
+                        @else
+                            <i class="bi bi-sort-up-alt"></i>
+                        @endif
+                </th>
+                <th>
+                    <a type="button" 
+                        class="sort_btn btn btn-light" 
+                        onclick="sort('created_at', 
+                                    {{$sort == 'created_at' && $order != 'desc' ? 'true' : 'false'}}, 
+                                    '{{isset($category) ? $category : null}}', 
+                                    '{{isset($keyword_search) ? $keyword_search : null}}')">作成日</a>
+                        @if($order == 'desc' && $sort == 'created_at')
+                            <i class="bi bi-sort-down"></i>
+                        @else
+                            <i class="bi bi-sort-up-alt"></i>
+                        @endif
+                </th>
+                <th>
+                    <a type="button" 
+                        class="sort_btn btn btn-light" 
+                        onclick="sort('hit', 
+                                    {{$sort == 'hit' && $order != 'desc' ? 'true' : 'false'}}, 
+                                    '{{isset($category) ? $category : null}}', 
+                                    '{{isset($keyword_search) ? $keyword_search : null}}')">アクセス数</a>
+                        @if($order == 'desc' && $sort == 'hit')
+                            <i class="bi bi-sort-down"></i>
+                        @else
+                            <i class="bi bi-sort-up-alt"></i>
+                        @endif
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -125,7 +202,7 @@
 
 @section('script')
 <script>
-    function sort(col_name, order, category=null, keyword=null)
+    function sort(col_name, order)
     {
         var col_input = "<input type='hidden' name='sort' value='"+col_name+"'/>"
 
