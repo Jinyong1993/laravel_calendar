@@ -40,7 +40,10 @@
 @section('content')
 <form action="{{route('board.index')}}" method="GET">
     <select name="category" class="form-select" id="my_color_search_list">
-        <option value="{{$board_col[1]}}" selected>
+        <option value="" selected>
+            カテゴリー
+        </option>
+        <option value="{{$board_col[1]}}">
             タイトル
         </option>
         <option value="{{$board_col[2]}}">
@@ -60,7 +63,7 @@
         value="" 
         class="date form-control form-control-sm" 
         placeholder="期間" 
-        autocomplete="on"> ~ 
+        autocomplete="off"> ~ 
         <input type="text" 
         id="date_to" 
         name="date_to" 
@@ -73,42 +76,49 @@
     <input type="hidden" name="sort" value="{{$sort}}"/>
     <input type="hidden" name="order" value="{{$order}}"/>
 </form>
+
 <form method="get" action="{{route('board.index')}}" id="board_form">
+    <input type="hidden" name="date_from" value="{{$date_from}}"/>
+    <input type="hidden" name="date_to" value="{{$date_to}}"/>
     <input type="hidden" name="category" value="{{$category}}"/>
     <input type="hidden" name="keyword_search" value="{{$keyword_search}}"/>
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('board_id', {{$sort == 'board_id' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">番号</a></th>
-            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('title', {{$sort == 'title' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">タイトル</a></th>
-            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('user_id', {{$sort == 'user_id' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">作成者</a></th>
-            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('created_at', {{$sort == 'created_at' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">作成日</a></th>
-            <th><a type="button" class="sort_btn btn btn-light" onclick="sort('hit', {{$sort == 'hit' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">アクセス数</a></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($board as $row)
-        <tr>
-            <th>{{$row->board_id}}</th>
-            <td style="max-width:100px" class="text-truncate">
-                <a href="{{route('board.content', ['board_id' => $row->board_id])}}">
-                    {{$row->title}}
-                </a>
-            </td>
-            <td>{{$row->user_id}}</td>
-            <td>{{$row->created_at}}</td>
-            <td>{{$row->hit}}</td>
-        </tr>
-        @endforeach
-    </tbody>
-    <tfoot>
-        
-    </tfoot>
-</table>
-<hr/>
-<div class="p-2" style="text-align: right">
-    <a type="button" href="{{route('board.create_view')}}" class="btn btn-success">作成</a>
-</div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th><a type="button" class="sort_btn btn btn-light" onclick="sort('board_id', {{$sort == 'board_id' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">番号</a></th>
+                <th><a type="button" class="sort_btn btn btn-light" onclick="sort('title', {{$sort == 'title' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">タイトル</a></th>
+                <th><a type="button" class="sort_btn btn btn-light" onclick="sort('user_id', {{$sort == 'user_id' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">作成者</a></th>
+                <th><a type="button" class="sort_btn btn btn-light" onclick="sort('created_at', {{$sort == 'created_at' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">作成日</a></th>
+                <th><a type="button" class="sort_btn btn btn-light" onclick="sort('hit', {{$sort == 'hit' && $order != 'desc' ? 'true' : 'false'}}, '{{isset($category) ? $category : null}}', '{{isset($keyword_search) ? $keyword_search : null}}')">アクセス数</a></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($board as $row)
+            @php
+            $time_stamp = strtotime($row->created_at);
+            $date_format = date('Y-m-d', $time_stamp);
+            @endphp
+            <tr>
+                <th>{{$row->board_id}}</th>
+                <td style="max-width:100px" class="text-truncate">
+                    <a href="{{route('board.content', ['board_id' => $row->board_id])}}">
+                        {{$row->title}}
+                    </a>
+                </td>
+                <td>{{$row->user_id}}</td>
+                <td>{{$date_format}}</td>
+                <td>{{$row->hit}}</td>
+            </tr>
+            @endforeach
+        </tbody>
+        <tfoot>
+            
+        </tfoot>
+    </table>
+    <hr/>
+    <div class="p-2" style="text-align: right">
+        <a type="button" href="{{route('board.create_view')}}" class="btn btn-success">作成</a>
+    </div>
 </form>
 <div class="page d-flex justify-content-center">{{ $board->appends(request()->query())->links() }}</div>
 @endsection
@@ -129,6 +139,18 @@
         $('#board_form').append(order_type)
         $('#board_form').submit()
     }
+
+    $(function(){
+        $("#date_from").datepicker( {
+            language: "ja",
+            format: "yyyy-mm-dd"
+        });
+
+        $("#date_to").datepicker( {
+            language: "ja",
+            format: "yyyy/mm/dd"
+        });
+    })
 
     
 </script>

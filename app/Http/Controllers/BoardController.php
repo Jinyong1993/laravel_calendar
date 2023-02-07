@@ -11,6 +11,10 @@ class BoardController extends Controller
 {
     public function index(Request $request)
     {
+        // 期間検索
+        $date_from = $request->date_from;
+        $date_to = $request->date_to;
+
         //　ボードテーブルのカラムを取得
         $board_col = Schema::getColumnListing('board');
 
@@ -31,18 +35,32 @@ class BoardController extends Controller
             $query->orderby($request->sort, $request->order);
         }
 
-        // 検索機能
-        if(isset($request->date_from)) {
-
+        // 期間検索
+        if(isset($date_from) && isset($date_to)) {
+            $query->whereBetween('created_at', [$date_from, $date_to]);
+        } else if (isset($date_from)) {
+            $query->where('created_at', '>=', $date_from);
+        } else if (isset($date_to)) {
+            $query->where('created_at', '<=', $date_to);
         }
+        
+        $category_available = in_array($request->category, $board_col);
+        
+        // キーワード検索
         if(isset($request->keyword_search)) {
-            $category_available = in_array($request->category, $board_col);
-            if(!$category_available){
-                return redirect()->back();
+            if(is_null($request->category)){
+                // カテゴリーが選択されなかった場合
+                $query->where('title', 'like', "%{$request->keyword_search}%")
+                    ->orWhere('note', 'like', "%{$request->keyword_search}%")
+                    ->orWhere('user_id', 'like', "%{$request->keyword_search}%");
+            } else {
+                // カテゴリーが選択された場合
+                $query->where($request->category, 'like', "%{$request->keyword_search}%");
             }
-            $query->where($request->category, 'like', "%{$request->keyword_search}%");
-        }
-
+        } else if(!$category_available){
+            // パラメターを操作され、一致しない場合
+        } 
+        
         $board = $query->paginate(10);
 
         $data = array(
@@ -52,6 +70,8 @@ class BoardController extends Controller
             'order' => $request->order,
             'category' => $request->category,
             'keyword_search' => $request->keyword_search,
+            'date_from' => $date_from,
+            'date_to' => $date_to,
         );
 
         return view('board.board_view', $data);

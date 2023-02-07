@@ -100,9 +100,8 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
   </div>
 </nav>
 
-    <form method="POST" action="#">
-        <input type="text" id="year_ajax" name="year" value="{{$year}}"><input type="text" id="month_ajax" name="month" value="{{$month}}">
-    
+<form method="POST" action="#">
+    <input type="hidden" id="year_ajax" name="year" value="{{$year ?? null}}"><input type="hidden" id="month_ajax" name="month" value="{{$month ?? null}}">
     <table class="table table-bordered" id="calendar">
         <?php
         $first = "$year/$month/1";
@@ -156,10 +155,10 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                         <?php endif ?>  
                         <div class="ps-2">
                             <input type="checkbox" 
-                                   data-weekday="{{$day_week}}" 
-                                   class="chk pl-2" 
-                                   name="check_test" 
-                                   value="{{$day}}"/>
+                                data-weekday="{{$day_week}}" 
+                                class="chk pl-2" 
+                                name="check_test" 
+                                value="{{$day}}"/>
                         </div>
                     <div style="flex-grow:1"></div>
                     <button style="flex-grow:0" 
@@ -200,7 +199,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
     </table>
     <input type="checkbox" id="check_all"/>
 
-	<button type="button" 
+    <button type="button" 
             class="btn btn-primary" 
             data-bs-toggle="modal" 
             data-bs-target="#calendar_search">検索
@@ -211,7 +210,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
             data-bs-toggle="modal" 
             data-bs-target="#color_edit">マイカラー設定
     </button>
-    </form>
+</form>
 
     <!-- + button modal -->
 <div class="modal plus" tabindex="-1">
