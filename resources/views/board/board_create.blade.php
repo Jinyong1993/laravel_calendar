@@ -57,7 +57,10 @@
         <tr>
             <th>タイトル</th>
             <td>
-                <input name="title" type="text" placeholder="タイトルを入力してください。" value="{{isset($select->title) ? $select->title : null}}"/>
+                <input name="title" 
+                        type="text" 
+                        placeholder="タイトルを入力してください。" 
+                        value="{{isset($select->title) ? $select->title : null}}"/>
             </td>
         </tr>
     </thead>

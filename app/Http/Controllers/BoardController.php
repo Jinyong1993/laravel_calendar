@@ -111,6 +111,8 @@ class BoardController extends Controller
             return redirect()->back()->withErrors('タイトルや内容欄に入力は必須です。');
         }
 
+        var_dump($request->file); exit;
+
         if($request->board_id){
             $board = Board::find($request->board_id);
         } else {
