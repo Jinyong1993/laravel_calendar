@@ -18,4 +18,5 @@ class Board extends Model
     {
         return $this->hasMany(BoardComment::class, 'board_id', 'board_id');
     }
+    
 }

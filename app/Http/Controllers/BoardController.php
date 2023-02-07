@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use App\Models\BoardComment;
+use App\Models\BoardFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class BoardController extends Controller
 {
@@ -111,8 +114,19 @@ class BoardController extends Controller
             return redirect()->back()->withErrors('タイトルや内容欄に入力は必須です。');
         }
 
-        var_dump($request->file); exit;
-
+        // フォームからアップロードされたファイル
+        $file = $request->file('file');
+        // フルネーム、拡張子を含んでいる
+        $file_name_with_ext = $file->getClientOriginalName();
+        // 拡張子を無くす
+        $file_name = pathinfo($file_name_with_ext, PATHINFO_FILENAME);
+        // ファイルの拡張子だけ抽出する
+        $file_extension = $file->getClientOriginalExtension();
+        // ファイルのサイズを収得
+        $file_size = $file->getSize();
+        // $file_path = $file->getRealPath();
+        // $file_mime = $file->getMimeType();
+        
         if($request->board_id){
             $board = Board::find($request->board_id);
         } else {
@@ -122,6 +136,24 @@ class BoardController extends Controller
         $board->title = $request->title;
         $board->note = $request->note;
         $board->save();
+
+        // 投稿をDBに保存したあと、ファイルがあったら
+        if(isset($file)){
+            $board_file = new BoardFile();
+            $board_file->board_id = $board->board_id;
+            $board_file->name = $file_name;
+            $board_file->size = $file_size;
+            $board_file->extension = $file_extension;
+            $board_file->route = '11'; // not null, 適当にルートの名前をつける
+            $board_file->save();
+            // $file_name_to_store = $file_name.'_'.time().'.'.$file_extension;
+
+            // DBにファイルを保存した後、プライマリキーで名前を変えて保存する
+            $file_name_to_store = $board_file->file_id.'.'.$file_extension;
+            $path = $file->storeAs('public', $file_name_to_store);
+            $board_file->route = $path;
+            $board_file->save();
+        }
 
         return redirect()->route('board.index')->with('flash_message', '投稿を完了しました。');
     }

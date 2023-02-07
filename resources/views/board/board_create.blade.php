@@ -48,7 +48,7 @@
         </ul>
     </div>
 @endif
-<form method="POST" action="{{route('board.create')}}">
+<form method="POST" action="{{route('board.create')}}" enctype="multipart/form-data">
 <input type="hidden" name="board_id" value="{{isset($select->board_id) ? $select->board_id : null}}"/>
 @csrf
 <h1>新規作成</h1>
@@ -74,7 +74,7 @@
         <tr>
             <th>ファイル</th>
             <td>
-                <input type="file" name="file"/>
+                <input type="file" id="file" name="file"/>
             </td>
         </tr>
     </tbody>
