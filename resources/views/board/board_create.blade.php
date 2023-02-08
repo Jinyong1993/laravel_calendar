@@ -52,7 +52,7 @@
 <input type="hidden" name="board_id" value="{{isset($select->board_id) ? $select->board_id : null}}"/>
 @csrf
 <h1>新規作成</h1>
-<table class="table table-borderd">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>タイトル</th>
@@ -74,7 +74,7 @@
         <tr>
             <th>ファイル</th>
             <td>
-                <input type="file" id="file" name="file"/>
+                <input type="file" id="file" name="file[]" multiple/>
             </td>
         </tr>
     </tbody>

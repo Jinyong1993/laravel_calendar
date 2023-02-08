@@ -134,8 +134,9 @@ class BoardController extends Controller
         }
 
         // フォームからアップロードされたファイル
-        $file = $request->file('file');
-
+        $files = $request->file('file');
+        var_dump($files);
+        
         if($request->board_id){
             $board = Board::find($request->board_id);
         } else {
@@ -147,33 +148,33 @@ class BoardController extends Controller
         $board->save();
 
         // 投稿をDBに保存したあと、ファイルがあったら
-        if(isset($file)){
-            // フルネーム、拡張子を含んでいる
-            $file_name_with_ext = $file->getClientOriginalName();
-            // 拡張子を無くす
-            $file_name = pathinfo($file_name_with_ext, PATHINFO_FILENAME);
-            // ファイルの拡張子だけ抽出する
-            $file_extension = $file->getClientOriginalExtension();
-            // ファイルのサイズを収得
-            $file_size = $file->getSize();
-
-            // $file_path = $file->getRealPath();
-            // $file_mime = $file->getMimeType();
-
-            $board_file = new BoardFile();
-            $board_file->board_id = $board->board_id;
-            $board_file->name = $file_name;
-            $board_file->size = $file_size;
-            $board_file->extension = $file_extension;
-            $board_file->route = '11'; // not nullのため, 適当にルートの名前をつける
-            $board_file->save();
-
-            // DBにファイルを保存した後、プライマリキーで名前を変えて保存する
-            $file_name_to_store = $board_file->file_id.'.'.$file_extension;
-            // パブリックディレクトリに保存
-            $path = $file->storeAs('public', $file_name_to_store);
-            $board_file->route = $path;
-            $board_file->save();
+        if(isset($files)){
+            foreach($files as $file){
+                // フルネーム、拡張子を含んでいる
+                $file_name_with_ext = $file->getClientOriginalName();
+                // 拡張子を無くす
+                $file_name = pathinfo($file_name_with_ext, PATHINFO_FILENAME);
+                // ファイルの拡張子だけ抽出する
+                $file_extension = $file->getClientOriginalExtension();
+                // ファイルのサイズを収得
+                $file_size = $file->getSize();
+    
+                $board_file = new BoardFile();
+                $board_file->board_id = $board->board_id;
+                $board_file->name = $file_name;
+                $board_file->size = $file_size;
+                $board_file->extension = $file_extension;
+                // not nullのため, 適当にルートの名前をつける
+                $board_file->route = 'fwefw';
+                $board_file->save();
+    
+                // DBにファイルを保存した後、プライマリキーで名前を変えて保存する
+                $file_name_to_store = $board_file->file_id.'.'.$file_extension;
+                // パブリックディレクトリに保存
+                $path = $file->storeAs('public', $file_name_to_store);
+                $board_file->route = $path;
+                $board_file->save();
+            }
         }
 
         return redirect()->route('board.index')->with('flash_message', '投稿を完了しました。');
