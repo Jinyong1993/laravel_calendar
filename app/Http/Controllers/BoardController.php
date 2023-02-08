@@ -106,11 +106,16 @@ class BoardController extends Controller
         $file = BoardFile::find($request->file_id);
         $file_path = $file->route;
         $file_name = $file->name.'.'.$file->extension;
-        
-        $mime_type = Storage::mimeType($file_path);
-        $headers = [['Content-Type' => $mime_type]];
-        
-        return Storage::download($file_path, $file_name, $headers);
+        $file_exist = Storage::exists($file->route);
+
+        // ファイルが存在するかどうか
+        if($file_exist){
+            $mime_type = Storage::mimeType($file_path);
+            $headers = [['Content-Type' => $mime_type]];
+            return Storage::download($file_path, $file_name, $headers);
+        } else {
+            return redirect()->back()->withErrors('ファイルが存在しません。');
+        }
     }
 
     public function create_view(Request $request)
