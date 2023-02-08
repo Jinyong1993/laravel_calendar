@@ -35,6 +35,7 @@ Route::prefix('/board')->name('board.')->middleware('auth')->group(function(){
     Route::post('/create', [BoardController::class, 'create'])->name('create');
     Route::post('/comment_update_ajax', [BoardController::class, 'comment_update_ajax'])->name('comment_update_ajax');
     Route::post('/comment_create', [BoardController::class, 'comment_create'])->name('comment_create');
+    Route::post('/file_delete', [BoardController::class, 'file_delete'])->name('file_delete');
     Route::post('/delete', [BoardController::class, 'delete'])->name('delete');
     Route::post('/comment_delete', [BoardController::class, 'comment_delete'])->name('comment_delete');
 });

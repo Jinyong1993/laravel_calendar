@@ -121,8 +121,12 @@ class BoardController extends Controller
     public function create_view(Request $request)
     {
         $select = Board::find($request->board_id);
+
+        $select->board_file();
+
         $data = array(
             'select' => $select,
+            'board_file_select' => $select->board_file,
         );
         return view('board.board_create', $data);
     }
@@ -135,7 +139,6 @@ class BoardController extends Controller
 
         // フォームからアップロードされたファイル
         $files = $request->file('file');
-        var_dump($files);
         
         if($request->board_id){
             $board = Board::find($request->board_id);
@@ -178,6 +181,13 @@ class BoardController extends Controller
         }
 
         return redirect()->route('board.index')->with('flash_message', '投稿を完了しました。');
+    }
+
+    public function file_delete(Request $request)
+    {
+        $board_file = BoardFile::find($request->file_id);
+        $board_file->delete();
+        return redirect()->back()->with('flash_message', '削除しました。');
     }
     
     public function delete(Request $request)

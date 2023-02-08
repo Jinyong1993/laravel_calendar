@@ -75,6 +75,32 @@
             <th>ファイル</th>
             <td>
                 <input type="file" id="file" name="file[]" multiple/>
+                <hr>
+                @if($board_file_select ?? null)
+                    @foreach($board_file_select as $file)
+                    <div class="row">
+                        <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
+                            style="text-align: center">ファイル名：{{$file->name}}
+                        </div>
+                        <div class="p-2 col-sm-12 col-md-2 col-lg-2 col-xl-2" 
+                            style="text-align: center">サイズ：{{$file->size}}</div>
+                        <div class="p-2 col-sm-12 col-md-2 col-lg-2 col-xl-2" 
+                            style="text-align: center">拡張子：{{$file->extension}}</div>
+                        <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
+                            style="text-align: center">アプロード時刻：{{$file->created_at}}</div>
+                        <div class="p-2 col-sm-12 col-md-1 col-lg-1 col-xl-1" 
+                            style="text-align: center">
+                            <button type="button" class="file_delete_button btn btn-danger btn-sm" 
+                                    value="{{$file->file_id}}"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#delete_modal">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <hr>
+                    </div>
+                    @endforeach
+                @endif
             </td>
         </tr>
     </tbody>
@@ -82,4 +108,40 @@
     <input type="submit" value="作成" class="btn btn-success"/>
     <a type="button" href="{{route('board.index', ['sort' => 'board_id', 'order' => 'desc'])}}" class="btn btn-light">取り消し</a>
 </form>
+
+<!-- delete modal -->
+<div class="modal fade" id="delete_modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">ファイル削除</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            本当に削除しますか？
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取り消し</button>
+            <form method="POST" action="{{route('board.file_delete')}}">
+            @csrf
+                <input type="hidden" name="file_id" id="file_id" value=""/>
+                <input type="submit" class="btn btn-danger" value="削除"/>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('script')
+<script>
+    $(function(){
+        $('.file_delete_button').click(function(){
+            var file_id = $(this).val()
+            $('#file_id').val(file_id)
+
+            // 모달여는거 만들기
+        })
+    })
+</script>
 @endsection

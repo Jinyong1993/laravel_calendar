@@ -75,9 +75,12 @@ $img_ext = array('jpg','jpeg','png','gif');
                 <i class="bi bi-download"></i>
             </a>
             @if(in_array($file->extension, $img_ext))
-                <button type="button" class="btn btn-primary btn-sm" 
+                <button type="button" 
+                        class="file_preview btn btn-primary btn-sm" 
+                        value="{{asset('storage/'.$file->file_id.'.'.$file->extension)}}"
                         data-bs-toggle="modal" 
-                        data-bs-target="#preview_modal">プレビュー</button>
+                        data-bs-target="#preview_modal">プレビュー
+                </button>
             @endif
         </div>
         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
@@ -86,6 +89,7 @@ $img_ext = array('jpg','jpeg','png','gif');
             style="text-align: center">拡張子：{{$file->extension}}</div>
         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
             style="text-align: center">アプロード時刻：{{$file->created_at}}</div>
+        <hr>
     </div>
     @endforeach
     @endif
@@ -150,7 +154,7 @@ $user_id = auth()->user()->id;
 <a type="button" href="{{route('board.index', ['sort' => 'board_id', 'order' => 'desc'])}}" class="btn btn-secondary">戻る</a>
 
 {{-- preview modal --}}
-<div class="modal fade" id="preview_modal" tabindex="0">
+<div class="preview modal fade" id="preview_modal" tabindex="0">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -159,12 +163,14 @@ $user_id = auth()->user()->id;
             </div>
             <div class="modal-body">
                 <form method="GET" action="{{route('board.content')}}">
-                    @foreach($board_file_select as $file)
-                        <img src="{{asset('storage/'.$file->file_id.'.'.$file->extension)}}" alt="イメージ" 
+                    {{-- @foreach($board_file_select as $file) --}}
+                        <img id="preview_img" 
+                            alt="イメージ" 
                             width="500" 
                             height="500" 
+                            value="{{$file->file_id}}"
                             style="max-width:100%; height:auto;">
-                    @endforeach
+                    {{-- @endforeach --}}
                 </form>
             </div>
             <div class="modal-footer">
@@ -224,6 +230,11 @@ $user_id = auth()->user()->id;
 @section('script')
 <script>
     $(function(){
+        $('.file_preview').click(function(){
+            var src = $(this).val()
+            $('.preview').find('img').attr('src', src)
+        })
+
         $('.comment_update_button').click(function(){
             var input_update = "<input type='submit' value='作成' class='input_saksei_button btn btn-success'/>"
             var input_cancel = "<input type='button' value='取り消し' class='input_cancel_button btn btn-secondary'/>"
