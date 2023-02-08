@@ -91,10 +91,12 @@ class BoardController extends Controller
 
         // １：n ジョイン
         $select->comments();
+        $select->board_file();
 
         $data = array(
             'select' => $select,
             'comment_select' => $select->comments,
+            'board_file_select' => $select->board_file,
         );
         return view('board.board_content', $data);
     }
@@ -116,17 +118,7 @@ class BoardController extends Controller
 
         // フォームからアップロードされたファイル
         $file = $request->file('file');
-        // フルネーム、拡張子を含んでいる
-        $file_name_with_ext = $file->getClientOriginalName();
-        // 拡張子を無くす
-        $file_name = pathinfo($file_name_with_ext, PATHINFO_FILENAME);
-        // ファイルの拡張子だけ抽出する
-        $file_extension = $file->getClientOriginalExtension();
-        // ファイルのサイズを収得
-        $file_size = $file->getSize();
-        // $file_path = $file->getRealPath();
-        // $file_mime = $file->getMimeType();
-        
+
         if($request->board_id){
             $board = Board::find($request->board_id);
         } else {
@@ -139,6 +131,18 @@ class BoardController extends Controller
 
         // 投稿をDBに保存したあと、ファイルがあったら
         if(isset($file)){
+            // フルネーム、拡張子を含んでいる
+            $file_name_with_ext = $file->getClientOriginalName();
+            // 拡張子を無くす
+            $file_name = pathinfo($file_name_with_ext, PATHINFO_FILENAME);
+            // ファイルの拡張子だけ抽出する
+            $file_extension = $file->getClientOriginalExtension();
+            // ファイルのサイズを収得
+            $file_size = $file->getSize();
+
+            // $file_path = $file->getRealPath();
+            // $file_mime = $file->getMimeType();
+
             $board_file = new BoardFile();
             $board_file->board_id = $board->board_id;
             $board_file->name = $file_name;

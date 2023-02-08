@@ -58,6 +58,23 @@
         </div>
     </div>
 </div>
+<div class="file">
+    @if($board_file_select ?? null)
+    <hr>
+    @foreach($board_file_select as $file)
+    <div class="row">
+        <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
+            style="text-align: center">ファイル名：{{$file->name}}&nbsp;<i class="bi bi-download"></i></div>
+        <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
+            style="text-align: center">サイズ：{{$file->size}}</div>
+        <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
+            style="text-align: center">拡張子：{{$file->extension}}</div>
+        <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
+            style="text-align: center">アプロード時刻：{{$file->created_at}}</div>
+    </div>
+    @endforeach
+    @endif
+</div>
 </form>
 <hr/>
 @php
