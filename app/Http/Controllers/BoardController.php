@@ -162,7 +162,6 @@ class BoardController extends Controller
             $board_file->extension = $file_extension;
             $board_file->route = '11'; // not nullのため, 適当にルートの名前をつける
             $board_file->save();
-            // $file_name_to_store = $file_name.'_'.time().'.'.$file_extension;
 
             // DBにファイルを保存した後、プライマリキーで名前を変えて保存する
             $file_name_to_store = $board_file->file_id.'.'.$file_extension;
