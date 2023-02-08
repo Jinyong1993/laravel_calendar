@@ -101,6 +101,18 @@ class BoardController extends Controller
         return view('board.board_content', $data);
     }
 
+    public function download(Request $request)
+    {
+        $file = BoardFile::find($request->file_id);
+        $file_path = $file->route;
+        $file_name = $file->name.'.'.$file->extension;
+        
+        $mime_type = Storage::mimeType($file_path);
+        $headers = [['Content-Type' => $mime_type]];
+        
+        return Storage::download($file_path, $file_name, $headers);
+    }
+
     public function create_view(Request $request)
     {
         $select = Board::find($request->board_id);
@@ -148,12 +160,13 @@ class BoardController extends Controller
             $board_file->name = $file_name;
             $board_file->size = $file_size;
             $board_file->extension = $file_extension;
-            $board_file->route = '11'; // not null, 適当にルートの名前をつける
+            $board_file->route = '11'; // not nullのため, 適当にルートの名前をつける
             $board_file->save();
             // $file_name_to_store = $file_name.'_'.time().'.'.$file_extension;
 
             // DBにファイルを保存した後、プライマリキーで名前を変えて保存する
             $file_name_to_store = $board_file->file_id.'.'.$file_extension;
+            // パブリックディレクトリに保存
             $path = $file->storeAs('public', $file_name_to_store);
             $board_file->route = $path;
             $board_file->save();

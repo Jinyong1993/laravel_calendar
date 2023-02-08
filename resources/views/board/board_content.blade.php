@@ -58,14 +58,27 @@
         </div>
     </div>
 </div>
+
+@php
+$img_ext = array('jpg','jpeg','png','gif');
+@endphp
+
 <div class="file">
     @if($board_file_select ?? null)
     <hr>
     @foreach($board_file_select as $file)
     <div class="row">
         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
-            style="text-align: center">ファイル名：{{$file->name}}&nbsp;
-            <i class="bi bi-download"></i>
+            style="text-align: center">ファイル名：
+            <a href="{{route('board.download', ['file_id' => $file->file_id])}}">
+                {{$file->name}}&nbsp;
+                <i class="bi bi-download"></i>
+            </a>
+            @if(in_array($file->extension, $img_ext))
+                <button type="button" class="btn btn-primary btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#preview_modal">プレビュー</button>
+            @endif
         </div>
         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
             style="text-align: center">サイズ：{{$file->size}}</div>
@@ -136,12 +149,37 @@ $user_id = auth()->user()->id;
 @endif
 <a type="button" href="{{route('board.index', ['sort' => 'board_id', 'order' => 'desc'])}}" class="btn btn-secondary">戻る</a>
 
+{{-- preview modal --}}
+<div class="modal fade" id="preview_modal" tabindex="0">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">プレビュー</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET" action="{{route('board.content')}}">
+                    @foreach($board_file_select as $file)
+                        <img src="{{asset('storage/'.$file->file_id.'.'.$file->extension)}}" alt="イメージ" 
+                            width="500" 
+                            height="500" 
+                            style="max-width:100%; height:auto;">
+                    @endforeach
+                </form>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- delete modal -->
 <div class="modal fade" id="delete_modal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">削除</h5>
+            <h5 class="modal-title">削除</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
@@ -164,7 +202,7 @@ $user_id = auth()->user()->id;
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">削除</h5>
+            <h5 class="modal-title">削除</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
