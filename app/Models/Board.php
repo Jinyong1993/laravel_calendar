@@ -13,7 +13,7 @@ class Board extends Model
     
     use SoftDeletes;
 
-    // 1:n
+    // 1:n セレクト
     public function comments()
     {
         return $this->hasMany(BoardComment::class, 'board_id', 'board_id');

@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+
 
 class BoardController extends Controller
 {
@@ -20,6 +22,9 @@ class BoardController extends Controller
 
         //　ボードテーブルのカラムを取得
         $board_col = Schema::getColumnListing('board');
+        $board_col[] = 'file_count';
+        $board_col[] = 'file_size';
+        $board_col[] = 'comment_count';
 
         if($request->sort){
             // テーブルのカラム名とマッチさせる
@@ -31,7 +36,15 @@ class BoardController extends Controller
         }
 
         // セレクトクエリー
-        $query = Board::select('board.*');
+        $query = Board::select('board.*', 
+                        DB::raw('count(distinct board_file.file_id) as file_count'), 
+                        DB::raw('if(count(board_comment.comment_id) > 0, (sum(board_file.size) / count(distinct board_comment.comment_id)),(sum(board_file.size) / 1)) as file_size'),
+                        DB::raw('count(distinct board_comment.comment_id) as comment_count'))
+                        ->leftjoin('board_file', 'board_file.board_id', '=', 'board.board_id')
+                        ->leftjoin('board_comment', 'board_comment.board_id', '=', 'board.board_id')
+                        // ->whereNotNull('board_file.board_id') inner join
+                        // ->whereNull('board_file.board_id') anti join
+                        ->groupBy('board_id');
         
         // マッチされたのがあったら、並ばせる
         if(isset($sort_available)) {
@@ -54,8 +67,8 @@ class BoardController extends Controller
             if(is_null($request->category)){
                 // カテゴリーが選択されなかった場合
                 $query->where('title', 'like', "%{$request->keyword_search}%")
-                    ->orWhere('note', 'like', "%{$request->keyword_search}%")
-                    ->orWhere('user_id', 'like', "%{$request->keyword_search}%");
+                    ->orWhere('board.note', 'like', "%{$request->keyword_search}%")
+                    ->orWhere('board.user_id', 'like', "%{$request->keyword_search}%");
             } else {
                 // カテゴリーが選択された場合
                 $query->where($request->category, 'like', "%{$request->keyword_search}%");
@@ -89,10 +102,6 @@ class BoardController extends Controller
             return redirect()->back()->withErrors('エラーが発生しました。');
         }
 
-        // １：n ジョイン
-        $select->comments();
-        $select->board_file();
-
         $data = array(
             'select' => $select,
             'comment_select' => $select->comments,
@@ -122,11 +131,8 @@ class BoardController extends Controller
     {
         $select = Board::find($request->board_id);
 
-        $select->board_file();
-
         $data = array(
             'select' => $select,
-            'board_file_select' => $select->board_file,
         );
         return view('board.board_create', $data);
     }

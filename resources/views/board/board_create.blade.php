@@ -76,24 +76,22 @@
             <td>
                 <input type="file" id="file" name="file[]" multiple/>
                 <hr>
-                @if($board_file_select ?? null)
-                    @foreach($board_file_select as $file)
+                @if(isset($select) && $select->board_file)
+                    @foreach($select->board_file as $file)
                     <div class="row">
                         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
-                            style="text-align: center">ファイル名：{{$file->name}}
+                            style="text-align: center">ファイル名：{{$file->name ?? null}}
                         </div>
                         <div class="p-2 col-sm-12 col-md-2 col-lg-2 col-xl-2" 
-                            style="text-align: center">サイズ：{{$file->size}}</div>
+                            style="text-align: center">サイズ：{{$file->size ?? null}}</div>
                         <div class="p-2 col-sm-12 col-md-2 col-lg-2 col-xl-2" 
-                            style="text-align: center">拡張子：{{$file->extension}}</div>
+                            style="text-align: center">拡張子：{{$file->extension ?? null}}</div>
                         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
-                            style="text-align: center">アプロード時刻：{{$file->created_at}}</div>
+                            style="text-align: center">アプロード時刻：{{$file->created_at ?? null}}</div>
                         <div class="p-2 col-sm-12 col-md-1 col-lg-1 col-xl-1" 
                             style="text-align: center">
                             <button type="button" class="file_delete_button btn btn-danger btn-sm" 
-                                    value="{{$file->file_id}}"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#delete_modal">
+                                    value="{{$file->file_id}}">
                                 <i class="bi bi-x-lg"></i>
                             </button>
                         </div>
@@ -139,8 +137,8 @@
         $('.file_delete_button').click(function(){
             var file_id = $(this).val()
             $('#file_id').val(file_id)
-
-            // 모달여는거 만들기
+            var myModal = new bootstrap.Modal(document.getElementById('delete_modal'))
+            myModal.show()
         })
     })
 </script>

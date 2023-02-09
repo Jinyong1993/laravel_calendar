@@ -67,6 +67,7 @@ $img_ext = array('jpg','jpeg','png','gif');
     @if($board_file_select ?? null)
     <hr>
     @foreach($board_file_select as $file)
+    <div class="p-2" style="">添付ファイル</div>
     <div class="row">
         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
             style="text-align: center">ファイル名：
@@ -168,7 +169,7 @@ $user_id = auth()->user()->id;
                             alt="イメージ" 
                             width="500" 
                             height="500" 
-                            value="{{$file->file_id}}"
+                            {{-- value="{{$file->file_id}}" --}}
                             style="max-width:100%; height:auto;">
                     {{-- @endforeach --}}
                 </form>

@@ -131,6 +131,19 @@
                 <th>
                     <a type="button" 
                         class="sort_btn btn btn-light" 
+                        onclick="sort('comment_count', 
+                                    {{$sort == 'comment_count' && $order != 'desc' ? 'true' : 'false'}}, 
+                                    '{{isset($category) ? $category : null}}', 
+                                    '{{isset($keyword_search) ? $keyword_search : null}}')">コメント数</a>
+                        @if($order == 'desc' && $sort == 'comment_count')
+                            <i class="bi bi-sort-down"></i>
+                        @else
+                            <i class="bi bi-sort-up-alt"></i>
+                        @endif
+                </th>
+                <th>
+                    <a type="button" 
+                        class="sort_btn btn btn-light" 
                         onclick="sort('user_id', 
                                     {{$sort == 'user_id' && $order != 'desc' ? 'true' : 'false'}}, 
                                     '{{isset($category) ? $category : null}}', 
@@ -167,6 +180,32 @@
                             <i class="bi bi-sort-up-alt"></i>
                         @endif
                 </th>
+                <th>
+                    <a type="button" 
+                        class="sort_btn btn btn-light" 
+                        onclick="sort('file_count', 
+                                    {{$sort == 'file_count' && $order != 'desc' ? 'true' : 'false'}}, 
+                                    '{{isset($category) ? $category : null}}', 
+                                    '{{isset($keyword_search) ? $keyword_search : null}}')">ファイル数</a>
+                        @if($order == 'desc' && $sort == 'file_count')
+                            <i class="bi bi-sort-down"></i>
+                        @else
+                            <i class="bi bi-sort-up-alt"></i>
+                        @endif
+                </th>
+                <th>
+                    <a type="button" 
+                        class="sort_btn btn btn-light" 
+                        onclick="sort('file_size', 
+                                    {{$sort == 'file_size' && $order != 'desc' ? 'true' : 'false'}}, 
+                                    '{{isset($category) ? $category : null}}', 
+                                    '{{isset($keyword_search) ? $keyword_search : null}}')">サイズ</a>
+                        @if($order == 'desc' && $sort == 'file_size')
+                            <i class="bi bi-sort-down"></i>
+                        @else
+                            <i class="bi bi-sort-up-alt"></i>
+                        @endif
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -176,20 +215,23 @@
             $date_format = date('Y-m-d', $time_stamp);
             @endphp
             <tr>
-                <th>{{$row->board_id}}</th>
-                <td style="max-width:100px" class="text-truncate">
+                <th style="text-align: center">{{$row->board_id}}</th>
+                <td style="max-width:100px; text-align:center;" class="text-truncate">
                     <a href="{{route('board.content', ['board_id' => $row->board_id])}}">
                         {{$row->title}}
                     </a>
                 </td>
-                <td>{{$row->user_id}}</td>
-                <td>{{$date_format}}</td>
-                <td>{{$row->hit}}</td>
+                <td style="text-align: center">{{$row->comment_count ?? 0}}</td>
+                <td style="text-align: center">{{$row->user_id}}</td>
+                <td style="text-align: center">{{$date_format}}</td>
+                <td style="text-align: center">{{$row->hit}}</td>
+                <td style="text-align: center">{{$row->file_count ?? 0}}</td>
+                <td style="text-align: center">{{$row->file_size ?? 0}}</td>
             </tr>
             @endforeach
         </tbody>
         <tfoot>
-            
+
         </tfoot>
     </table>
     <hr/>
