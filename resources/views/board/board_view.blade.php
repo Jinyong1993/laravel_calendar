@@ -19,17 +19,17 @@
                 </li>
             </ul>
         </div>
-        <div class="col-auto">
+        <div class="col-2">
             <div class="nav navbar-nav navbar-left">
                 <h3>{{auth()->user()->name}} 様</h3>
             </div>
         </div>
-        <div class="col-auto">
+        <div class="col-3">
             <a class="btn btn-info btn-sm" href="{{route('auth.user_info')}}">会員情報</a>
         </div>
         <form method="post" action="{{ route('logout') }}">
             @csrf
-            <div class="col-auto">
+            <div>
                 <button calss="btn btn-danger btn-sm" type="submit">ログアウト</button>
             </div>
         </form>
@@ -68,7 +68,7 @@
                         </option>
                     </select>
                     <div class="col-auto p-2">
-                        <input type="text" name="keyword_search" value="{{$keyword_search ?? null}}"/>
+                        <input type="text" id="keyword_search" name="keyword_search" value="{{$keyword_search ?? null}}"/>
                     </div>
                     <div class="col-auto p-2">
                         <input type="text" 
@@ -86,7 +86,10 @@
                         placeholder="期間"
                         autocomplete="off">
                     </div>
-                    <input type="submit" value="検索" class="btn btn-success btn-sm"/>
+                    <div class="col p-2">
+                        <input type="submit" value="検索" class="btn btn-success btn-sm"/>
+                        <input type="button" id="search_clear" value="検索条件クリア" class="btn btn-secondary btn-sm"/>
+                    </div>
                     <input type="hidden" name="sort" value="{{$sort}}"/>
                     <input type="hidden" name="order" value="{{$order}}"/>
                 </form>
@@ -321,6 +324,13 @@
 
             var myModal = new bootstrap.Modal(document.getElementById('comment_modal'))
             myModal.show()
+        })
+
+        $("#search_clear").click(function(){
+            $("#category").val(null)
+            $("#keyword_search").val(null)
+            $("#date_from").val(null)
+            $("#date_to").val(null)
         })
     })
 
