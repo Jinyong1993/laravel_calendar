@@ -229,7 +229,7 @@
                 <td style="text-align: center">{{$row->user_id}}</td>
                 <td style="text-align: center">{{$date_format}}</td>
                 <td style="text-align: center">{{$row->hit}}</td>
-                <td style="text-align: center">{{$row->file_count ?? 0}}</td>
+                <td style="text-align: center">{{$row->file_count}}</td>
                 <td style="text-align: center">{{ceil($row->file_size / 1024).' mb' ?? 0}}</td>
             </tr>
             @endforeach

@@ -46,16 +46,19 @@ class BoardController extends Controller
 
         // セレクトクエリー
         $query = Board::select('board.*', 
-                        DB::raw('count(distinct board_file.file_id) as file_count'), 
-                        DB::raw('if(count(board_comment.comment_id) > 0, 
-                                    (sum(board_file.size) / count(distinct board_comment.comment_id)),
-                                    (sum(board_file.size) / 1)) as file_size'),
-                        DB::raw('count(distinct board_comment.comment_id) as comment_count'))
-                        ->leftjoin('board_file', 'board_file.board_id', '=', 'board.board_id')
-                        ->leftjoin('board_comment', 'board_comment.board_id', '=', 'board.board_id')
-                        // ->whereNotNull('board_file.board_id') -> inner join
-                        // ->whereNull('board_file.board_id') -> anti join
-                        ->groupBy('board_id');
+                DB::raw('count(distinct board_file.file_id) as file_count'), 
+                DB::raw('if(count(board_comment.comment_id) > 0, 
+                            (sum(board_file.size) / count(distinct board_comment.comment_id)),
+                            (sum(board_file.size) / 1)) as file_size'),
+                DB::raw('count(distinct board_comment.comment_id) as comment_count'))
+                ->leftjoin('board_file', 'board_file.board_id', '=', 'board.board_id')
+                ->leftjoin('board_comment', function ($join){
+                    $join->on('board_comment.board_id', '=', 'board.board_id')
+                    ->whereNull('board_comment.deleted_at');
+                })
+                ->groupBy('board_id');
+                // ->whereNotNull('board_file.board_id') -> inner join
+                // ->whereNull('board_file.board_id') -> anti join
         
         // マッチされたのがあったら、並ばせる
         if(isset($sort_available)) {
