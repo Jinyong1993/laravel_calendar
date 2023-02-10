@@ -56,7 +56,7 @@ class BoardController extends Controller
                         // ->whereNotNull('board_file.board_id') -> inner join
                         // ->whereNull('board_file.board_id') -> anti join
                         ->groupBy('board_id');
-
+        
         // マッチされたのがあったら、並ばせる
         if(isset($sort_available)) {
             $query->orderby($sort, $order);

@@ -254,9 +254,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-            @php
-            $user_id = auth()->user()->id;
-            @endphp
             @foreach($board as $comment)
             <div class="comment_contents container">
                 <input type="hidden" class="coment_id_hidden" value="{{$comment->comment_id}}"/>
