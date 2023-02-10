@@ -54,16 +54,16 @@
             <div class="accordion-body">
                 <form action="{{route('board.index')}}" method="GET">
                     <select name="category" class="form-select" id="category">
-                        <option value="" selected>
-                            カテゴリー
+                        <option value="" {{empty($category) ? 'selected' : ''}}>
+                            未選択
                         </option>
-                        <option value="{{$board_col[1]}}">
+                        <option value="{{$board_col[1]}}" {{$category == $board_col[1] ? 'selected' : ''}}>
                             タイトル
                         </option>
-                        <option value="{{$board_col[2]}}">
+                        <option value="{{$board_col[2]}}" {{$category == $board_col[2] ? 'selected' : ''}}>
                             内容
                         </option>
-                        <option value="{{$board_col[3]}}">
+                        <option value="{{$board_col[3]}}" {{$category == $board_col[3] ? 'selected' : ''}}>
                             作成者
                         </option>
                     </select>
@@ -221,12 +221,16 @@
                         {{$row->title}}
                     </a>
                 </td>
-                <td style="text-align: center">{{$row->comment_count ?? 0}}</td>
+                <td style="text-align: center">
+                    <a class="comment_preview" href="#">
+                    {{$row->comment_count ?? 0}}
+                    </a>
+                </td>
                 <td style="text-align: center">{{$row->user_id}}</td>
                 <td style="text-align: center">{{$date_format}}</td>
                 <td style="text-align: center">{{$row->hit}}</td>
                 <td style="text-align: center">{{$row->file_count ?? 0}}</td>
-                <td style="text-align: center">{{$row->file_size ?? 0}}</td>
+                <td style="text-align: center">{{ceil($row->file_size / 1024).' mb' ?? 0}}</td>
             </tr>
             @endforeach
         </tbody>
@@ -240,6 +244,52 @@
     </div>
 </form>
 <div class="page d-flex justify-content-center">{{ $board->appends(request()->query())->links() }}</div>
+
+{{-- comment_preview modal --}}
+<div class="modal fade" id="comment_modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">コメントプレビュー</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            @php
+            $user_id = auth()->user()->id;
+            @endphp
+            @foreach($board as $comment)
+            <div class="comment_contents container">
+                <input type="hidden" class="coment_id_hidden" value="{{$comment->comment_id}}"/>
+                <div class="row m-1">
+                    <div class="col-sm-12 
+                                col-md-6 
+                                col-lg-6 
+                                col-xl-6 
+                                p-2">
+                                作成者：{{$comment->user_id}}
+                    </div>
+                    <div class="col-sm-12 
+                                col-md-12 
+                                col-lg-12 
+                                col-xl-12
+                                p-2">
+                                作成日：{{$comment->created_at}}
+                    </div>
+                    <div class="comment_space col-12 p-2" style="word-break:break-all;">
+                        <span>{{$comment->note}}</span>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            @endforeach
+        </div>
+        <div class="modal-footer">
+
+        </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('script')
@@ -269,6 +319,12 @@
             language: "ja",
             format: "yyyy/mm/dd"
         });
+
+        $(".comment_preview").click(function(){
+
+            var myModal = new bootstrap.Modal(document.getElementById('comment_modal'))
+            myModal.show()
+        })
     })
 
     

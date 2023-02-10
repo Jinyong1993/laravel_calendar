@@ -85,7 +85,7 @@ $img_ext = array('jpg','jpeg','png','gif');
             @endif
         </div>
         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
-            style="text-align: center">サイズ：{{$file->size}}</div>
+            style="text-align: center">サイズ：{{ceil($file->size / 1024).' mb'}}</div>
         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
             style="text-align: center">拡張子：{{$file->extension}}</div>
         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 

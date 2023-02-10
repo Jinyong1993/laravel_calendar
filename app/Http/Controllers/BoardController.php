@@ -16,9 +16,18 @@ class BoardController extends Controller
 {
     public function index(Request $request)
     {
-        // 期間検索
-        $date_from = $request->date_from;
-        $date_to = $request->date_to;
+        if(isset($request->keyword_search) || isset($request->sort)){
+            session()->put('index', $request->all());
+        }
+
+        $get = session()->get('index');
+
+        $category = $get['category'] ?? $request->category;
+        $keyword_search = $get['keyword_search'] ?? $request->keyword_search;
+        $date_from = $get['date_from'] ?? $request->date_from;
+        $date_to = $get['date_to'] ?? $request->date_to;
+        $sort = $get['sort'] ?? $request->sort;
+        $order = $get['order'] ?? $request->order;
 
         //　ボードテーブルのカラムを取得
         $board_col = Schema::getColumnListing('board');
@@ -26,9 +35,9 @@ class BoardController extends Controller
         $board_col[] = 'file_size';
         $board_col[] = 'comment_count';
 
-        if($request->sort){
+        if($sort){
             // テーブルのカラム名とマッチさせる
-            $sort_available = in_array($request->sort, $board_col);
+            $sort_available = in_array($sort, $board_col);
             // マッチされたのがなかったら、リターン
             if(!$sort_available) {
                 return redirect()->back();
@@ -38,40 +47,42 @@ class BoardController extends Controller
         // セレクトクエリー
         $query = Board::select('board.*', 
                         DB::raw('count(distinct board_file.file_id) as file_count'), 
-                        DB::raw('if(count(board_comment.comment_id) > 0, (sum(board_file.size) / count(distinct board_comment.comment_id)),(sum(board_file.size) / 1)) as file_size'),
+                        DB::raw('if(count(board_comment.comment_id) > 0, 
+                                    (sum(board_file.size) / count(distinct board_comment.comment_id)),
+                                    (sum(board_file.size) / 1)) as file_size'),
                         DB::raw('count(distinct board_comment.comment_id) as comment_count'))
                         ->leftjoin('board_file', 'board_file.board_id', '=', 'board.board_id')
                         ->leftjoin('board_comment', 'board_comment.board_id', '=', 'board.board_id')
-                        // ->whereNotNull('board_file.board_id') inner join
-                        // ->whereNull('board_file.board_id') anti join
+                        // ->whereNotNull('board_file.board_id') -> inner join
+                        // ->whereNull('board_file.board_id') -> anti join
                         ->groupBy('board_id');
-        
+
         // マッチされたのがあったら、並ばせる
         if(isset($sort_available)) {
-            $query->orderby($request->sort, $request->order);
+            $query->orderby($sort, $order);
         }
 
         // 期間検索
         if(isset($date_from) && isset($date_to)) {
-            $query->whereBetween('created_at', [$date_from, $date_to]);
+            $query->whereBetween('board.created_at', [$date_from, $date_to]);
         } else if (isset($date_from)) {
-            $query->where('created_at', '>=', $date_from);
+            $query->where('board.created_at', '>=', $date_from);
         } else if (isset($date_to)) {
-            $query->where('created_at', '<=', $date_to);
+            $query->where('board.created_at', '<=', $date_to);
         }
         
-        $category_available = in_array($request->category, $board_col);
+        $category_available = in_array($category, $board_col);
         
         // キーワード検索
-        if(isset($request->keyword_search)) {
-            if(is_null($request->category)){
+        if(isset($keyword_search)) {
+            if(is_null($category)){
                 // カテゴリーが選択されなかった場合
-                $query->where('title', 'like', "%{$request->keyword_search}%")
-                    ->orWhere('board.note', 'like', "%{$request->keyword_search}%")
-                    ->orWhere('board.user_id', 'like', "%{$request->keyword_search}%");
+                $query->where('board.title', 'like', "%{$keyword_search}%")
+                    ->orWhere('board.note', 'like', "%{$keyword_search}%")
+                    ->orWhere('board.user_id', 'like', "%{$keyword_search}%");
             } else {
                 // カテゴリーが選択された場合
-                $query->where($request->category, 'like', "%{$request->keyword_search}%");
+                $query->where('board.'.$category, 'like', "%{$keyword_search}%");
             }
         } else if(!$category_available){
             // URLパラメーターを触られ、一致しない場合
@@ -82,10 +93,10 @@ class BoardController extends Controller
         $data = array(
             'board' => $board,
             'board_col' => $board_col,
-            'sort' => $request->sort,
-            'order' => $request->order,
-            'category' => $request->category,
-            'keyword_search' => $request->keyword_search,
+            'sort' => $sort,
+            'order' => $order,
+            'category' => $category,
+            'keyword_search' => $keyword_search,
             'date_from' => $date_from,
             'date_to' => $date_to,
         );

@@ -83,7 +83,7 @@
                             style="text-align: center">ファイル名：{{$file->name ?? null}}
                         </div>
                         <div class="p-2 col-sm-12 col-md-2 col-lg-2 col-xl-2" 
-                            style="text-align: center">サイズ：{{$file->size ?? null}}</div>
+                            style="text-align: center">サイズ：{{ceil($file->size / 1024).' mb' ?? null}}</div>
                         <div class="p-2 col-sm-12 col-md-2 col-lg-2 col-xl-2" 
                             style="text-align: center">拡張子：{{$file->extension ?? null}}</div>
                         <div class="p-2 col-sm-12 col-md-3 col-lg-3 col-xl-3" 
