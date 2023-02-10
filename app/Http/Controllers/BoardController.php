@@ -88,7 +88,7 @@ class BoardController extends Controller
             }
         } else if(!$category_available){
             // URLパラメーターを触られ、一致しない場合
-        } 
+        }
         
         $board = $query->paginate(10);
 

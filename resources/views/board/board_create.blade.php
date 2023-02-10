@@ -57,6 +57,7 @@
             <th>タイトル</th>
             <td>
                 <input name="title" 
+                        class="form-control"
                         type="text" 
                         placeholder="タイトルを入力してください。" 
                         value="{{isset($select->title) ? $select->title : null}}"/>
@@ -67,13 +68,13 @@
         <tr>
             <th>内容</th>
             <td>
-                <textarea name="note" placeholder="内容を入力してください。">{{isset($select->note) ? $select->note : null}}</textarea>
+                <textarea class="form-control" name="note" placeholder="内容を入力してください。">{{isset($select->note) ? $select->note : null}}</textarea>
             </td>
         </tr>
         <tr>
             <th>ファイル</th>
             <td>
-                <input type="file" id="file" name="file[]" multiple/>
+                <input class="form-control" type="file" id="file" name="file[]" multiple/>
                 <hr>
                 @if(isset($select) && $select->board_file)
                     @foreach($select->board_file as $file)
