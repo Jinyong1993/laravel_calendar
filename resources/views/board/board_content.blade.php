@@ -130,6 +130,7 @@ $user_id = auth()->user()->id;
         @endif
     </div>
 </div>
+<hr>
 @endforeach
 <hr/>
 <form method="POST" action="{{route('board.comment_create')}}">

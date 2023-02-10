@@ -68,7 +68,12 @@
                         </option>
                     </select>
                     <div class="col-auto p-2">
-                        <input type="text" id="keyword_search" name="keyword_search" value="{{$keyword_search ?? null}}"/>
+                        <input type="text" 
+                                id="keyword_search" 
+                                name="keyword_search" 
+                                value="{{$keyword_search ?? null}}"
+                                placeholder="キーワードを入力してください。"
+                                class="form-control"/>
                     </div>
                     <div class="col-auto p-2">
                         <input type="text" 
