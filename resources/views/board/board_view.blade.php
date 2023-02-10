@@ -326,7 +326,6 @@
         });
 
         $(".comment_preview").click(function(){
-
             var myModal = new bootstrap.Modal(document.getElementById('comment_modal'))
             myModal.show()
         })

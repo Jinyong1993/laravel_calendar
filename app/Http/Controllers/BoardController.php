@@ -75,7 +75,6 @@ class BoardController extends Controller
         }
         
         $category_available = in_array($category, $board_col);
-        
         // キーワード検索
         if(isset($keyword_search)) {
             if(is_null($category)){
@@ -115,6 +114,10 @@ class BoardController extends Controller
         if(empty($select->board_id)){
             return redirect()->back()->withErrors('エラーが発生しました。');
         }
+
+        //　アクセス数を増やす
+        $select->hit += 1;
+        $select->save();
 
         $data = array(
             'select' => $select,
