@@ -233,7 +233,7 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                                         value="" 
                                         class="date form-control form-control-sm" 
                                         placeholder="期間" 
-                                        autocomplete="on"> ~ 
+                                        autocomplete="off"> ~ 
                                 <input type="text" 
                                         id="date_to" 
                                         name="date_to" 
@@ -246,13 +246,13 @@ $total_week = (int) ceil(($total_day + $start_day_week) / 7);
                         <tr>
                             <th>予定</th>
                             <td>
-                                <input type="text" id="plus_title" value="" placeholder="予定を入力する。"/>
+                                <input type="text" id="plus_title" class="form-control form-control-sm" value="" placeholder="予定を入力する。"/>
                             </td>
                         </tr>
                         <tr>
                             <th>備考</th>
                             <td>
-                                <textarea id="plus_textarea" placeholder="備考"></textarea>
+                                <textarea id="plus_textarea" class="form-control form-control-sm" placeholder="備考"></textarea>
                             </td>
                         </tr>
                         <tr>

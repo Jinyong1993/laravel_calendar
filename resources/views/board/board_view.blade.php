@@ -230,9 +230,7 @@
                     </a>
                 </td>
                 <td style="text-align: center">
-                    <a class="comment_preview" href="#">
                     {{$row->comment_count ?? 0}}
-                    </a>
                 </td>
                 <td style="text-align: center">{{$row->user_id}}</td>
                 <td style="text-align: center">{{$date_format}}</td>
@@ -264,7 +262,7 @@
         <div class="modal-body">
             @foreach($board as $comment)
             <div class="comment_contents container">
-                <input type="hidden" class="coment_id_hidden" value="{{$comment->comment_id}}"/>
+                <input type="text" class="coment_id_hidden" value="{{$comment->comment_id}}"/>
                 <div class="row m-1">
                     <div class="col-sm-12 
                                 col-md-6 

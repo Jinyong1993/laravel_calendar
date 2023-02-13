@@ -43,7 +43,7 @@ class CalendarController extends BaseController
     }
 
     private function select($year, $month)
-    {       
+    {
         $query = array();
 
         // フォメット　01,02...12
