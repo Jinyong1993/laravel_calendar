@@ -39,6 +39,94 @@ class CalendarController extends BaseController
             'tag_query' => $tag_query,
         );
 
+        function majorityElement1($nums) {
+            $numsValues = array_count_values($nums);
+            $maxVal = max($numsValues);
+            return array_search($maxVal, $numsValues);
+        }
+
+        function majorityElement2($nums) {
+            $array = array_count_values($nums); // 1=>3, 2=>2, 3=>6
+            $prevVal = 0;
+            $prevKey = '';
+            foreach ($array as $key=>$value) { // 1=>3, 2=>2
+                if ($prevVal < $value) { // // 0 < 3, 3 < 2
+                    $prevVal = $value; // 3
+                    $prevKey = $key; // 1
+                }
+            }
+            
+            return $prevKey; // 2
+        }
+
+        function arrayCountValues($nums) {
+            $arr = [];
+            foreach($nums as $k){
+                if(!isset($arr[$k])){
+                    $arr[$k] = 0;
+                }
+                $arr[$k] += 1;
+            }
+    
+        }
+
+        function detectCapitalUse($word) {
+            if(strlen($word) == 1) return true;
+            $upper = false;
+            $lower = false;
+            $f_upper = ctype_upper($word[0]); // false
+    
+            for($i=1; $i<strlen($word); $i++){
+                if(ctype_upper($word[$i])){ // 1
+                    if(!$f_upper || $lower) {
+                        return false;
+                    }
+                    $upper = true;
+                } else { // 2
+                    if($upper) {
+                        return false;
+                    }
+                    $lower = true; // 3
+                }
+            }
+            return true;
+        }
+
+        function findMaxConsecutiveOnes($nums) {
+            $cnt = 0;
+            $cnt_save = 0;
+            foreach($nums as $i => $num) {
+                if($num == 1){
+                    $cnt++;
+                } else {
+                    if($cnt_save < $cnt){
+                        $cnt_save = $cnt;
+                    }
+                    $cnt = 0;
+                }
+            }
+            if($cnt_save < $cnt){
+                return $cnt;
+            } else {
+                return $cnt_save;
+            }
+        }
+
+        function generate($numRows) {
+            $arr=[];
+            for($i=0; $i<$numRows; $i++){
+                $arr[$i][0] = 1;
+                for($j=1; $j<$i; $j++){
+                  $arr[$i][$j] = $arr[$i-1][$j-1] + $arr[$i-1][$j];
+                }
+                $arr[$i][$i] = 1;
+            }
+            return $arr;
+        }
+
+        $numRows = 5;
+        generate(($numRows));
+
         return view('calendar.calendar_view', $data);
     }
 
