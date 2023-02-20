@@ -124,8 +124,95 @@ class CalendarController extends BaseController
             return $arr;
         }
 
-        $numRows = 5;
-        generate(($numRows));
+        function addDigits($num) {
+            $num = str_split($num);
+            $num = array_sum($num);
+            if($num < 10){
+                return $num;
+            } else {
+                // return $this->addDigits($num);
+            }
+        }
+
+        function findTheDifference($s, $t) {
+            $s_arr = str_split($s);
+            sort($s_arr);
+
+            $t_arr = str_split($t);
+            sort($t_arr);
+
+            for($i=0; $i<strlen($s); $i++){
+                if($s_arr[$i] != $t_arr[$i]){
+                    return $t_arr[$i];
+                }
+            }
+            return $t_arr[$i];
+        }
+
+        function containsDuplicate($nums) {
+            $nums = array_count_values($nums);
+    
+            foreach($nums as $num){
+                if($num > 1){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function toLowerCase($s) {
+            for($i=0; $i<strlen($s); $i++){
+                if(ctype_upper($s[$i])){
+                    $s = strtolower($s);
+                }
+            }
+            return $s;
+        }
+
+        function maximum69Number ($num) {
+            $num = str_split($num);
+    
+            for($i=0; $i<count($num); $i++){
+                if($num[$i] == 6){
+                    $num[$i] = 9;
+                    break;
+                }
+            }
+            return implode($num);
+        }
+
+        function alternateDigitSum($num) {
+            $isSum = false;
+            $num = str_split($num);
+            $result = 0;
+            foreach($num as $n){
+                if($isSum == false){
+                    $result += $n;
+                    $isSum = true;
+                } else {
+                    $result -= $n;
+                    $isSum = false;
+                }
+            }
+            return $result;
+        }
+
+        function longestCommonPrefix($strs) {
+            if (count($strs) == 1) return $strs[0];
+            $prefix = $strs[0];
+            for ($i=1; $i<count($strs); $i++) {
+                for ($j=0; $j<strlen($prefix); $j++) {
+                    if (!isset($strs[$i][$j]) || $prefix[$j] != $strs[$i][$j]) {
+                        break;
+                    }
+                }
+                $prefix = substr($prefix, 0, $j);
+            }
+            return $prefix;
+        }
+
+        $strs = ["1234","123","12"];
+        longestCommonPrefix($strs);
 
         return view('calendar.calendar_view', $data);
     }
