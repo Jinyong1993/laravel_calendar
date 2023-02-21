@@ -39,6 +39,152 @@ class CalendarController extends BaseController
             'tag_query' => $tag_query,
         );
 
+        function twoSum($nums, $target) {
+            $n = count($nums);
+            for($i=0; $i<=$n; $i++){
+                for($j=$i+1; $j<=$n; $j++){
+                    $num = $nums[$i] + $nums[$j];
+                    if($num == $target){
+                        return array($i,$j);
+                    }
+                }
+            }
+        
+        }
+        
+        function isPalindrome($x) {
+            $x_str = $x;
+            $rev = strrev($x);
+            if($x_str == $rev){
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        function romanToInt($s) {
+            $roman_arr = array(
+                'I' => 1, 
+                'V' => 5,
+                'X' => 10,
+                'L' => 50,
+                'C' => 100,
+                'D' => 500,
+                'M' => 1000,
+            );
+            $str_arr = str_split($s);
+            $sum = 0;
+            foreach($str_arr as $str => $val){
+                $next_val = $str_arr[$str+1];
+                
+                if($roman_arr[$val] < $roman_arr[$next_val]){
+                    $sum -= $roman_arr[$val];
+                } else {
+                    $sum += $roman_arr[$val];
+                }
+            }
+            return $sum;
+        }
+        
+        function removeElement(&$nums, $val) {
+            foreach($nums as $num => $value) {
+                if($val == $value) {
+                    unset($nums[$num]);
+                }
+            }
+        }
+        
+        function moveZeroes(&$nums) {
+            $zero_locations = array_keys($nums, 0);
+        
+            foreach ($zero_locations as $location_index) {
+                unset($nums[$location_index]);
+                $nums[] = 0;
+            }
+            return $nums;
+        }
+        
+        function lengthOfLastWord($s) {
+            $words = explode(' ', trim($s));
+            var_dump($words);
+            return strlen(end($words));
+        }
+        $s = "Hello World  ";
+        $s1 = "   fly me   to  the    moo   n   ";
+        
+        function searchInsert($nums, $target) {
+            for($i = 0; $i < count($nums); $i++){
+                if($nums[$i] == $target){
+                    return $i;
+                }
+                if($nums[$i] > $target){
+                    return $i;
+                }
+            }
+            return $i;
+        }
+        
+        function addToArrayForm($num, $k) {
+            $num = array_reverse($num); // [4,7,2]
+            $k = array_reverse(str_split($k)); // [8,1]
+        
+            if(count($num) < count($k)) { // 3 < 2
+                $tmp = $num; // [4,7,2]
+                $num = $k; // [8,1]
+                $k = $tmp; // [4,7,2]
+            }
+        
+            $carry = false;
+            foreach($num as $i => $n) {
+        
+                if(isset($k[$i]) || $carry) {
+                    if(isset($k[$i])) {
+                        $num[$i] = $n + $k[$i]; // [12] => [2], [8]
+                    }
+                    if($carry) {
+                        $num[$i]++; // [8] => [9]
+                        $carry = false; // false
+        
+                    }
+                    if($num[$i] >= 10) {
+                        $num[$i] -= 10; // [2]
+                        $carry = true;
+                    }
+                } else {
+                    break;
+                }
+            }
+            if($carry) {
+                $num[] = 1;
+            }
+            return array_reverse($num);
+        }
+        // $num = [2,7,4]; 
+        // $k = 181;
+        
+        function plusOne($digits) {
+            $digits = array_reverse($digits);
+            $digits[0]++;
+            $carry = false;
+            foreach($digits as $i => $digit){
+                if($carry){
+                    $digits[$i]++;
+                    $carry = false;
+                }
+                if($digits[$i] >= 10){
+                    $digits[$i] -= 10;
+                    $carry = true;
+                } else {
+                    break;
+                }
+            }
+            if($carry){
+                $digits[] = 1;
+            }
+            return array_reverse($digits);
+        }
+        
+
         function majorityElement1($nums) {
             $numsValues = array_count_values($nums);
             $maxVal = max($numsValues);
@@ -49,7 +195,7 @@ class CalendarController extends BaseController
             $array = array_count_values($nums); // 1=>3, 2=>2, 3=>6
             $prevVal = 0;
             $prevKey = '';
-            foreach ($array as $key=>$value) { // 1=>3, 2=>2
+            foreach ($array as $key => $value) { // 1=>3, 2=>2
                 if ($prevVal < $value) { // // 0 < 3, 3 < 2
                     $prevVal = $value; // 3
                     $prevKey = $key; // 1
@@ -211,8 +357,36 @@ class CalendarController extends BaseController
             return $prefix;
         }
 
-        $strs = ["1234","123","12"];
-        longestCommonPrefix($strs);
+        // $strs = ["1234","123","12"];
+        // longestCommonPrefix($strs);
+
+        function searchInsert_binary($nums, $target) {
+            sort($nums);
+            $low = 0;
+            $high = count($nums) - 1;
+
+            if($nums[$high] < $target){
+                return $high + 1;
+            } else if($nums[$low] >= $target){
+                return 0;
+            }
+
+            while($low <= $high){
+                $mid = floor(($high + $low) / 2);
+        
+                if ($nums[$mid] == $target) {
+                    return $mid;
+                } else if ($nums[$mid] > $target){
+                    $high = $mid - 1;
+                } else {
+                    $low = $mid + 1;
+                }
+            }
+            return $low;
+        }
+        // $nums = [1,3,5,6,8,10,12,13,17,20];
+        // $target = 2;
+        // searchInsert($nums, $target);
 
         return view('calendar.calendar_view', $data);
     }
