@@ -106,11 +106,10 @@ class CalendarController extends BaseController
         
         function lengthOfLastWord($s) {
             $words = explode(' ', trim($s));
-            var_dump($words);
             return strlen(end($words));
         }
-        $s = "Hello World  ";
-        $s1 = "   fly me   to  the    moo   n   ";
+        // $s = "Hello World  ";
+        // $s1 = "   fly me   to  the    moo   n   ";
         
         function searchInsert($nums, $target) {
             for($i = 0; $i < count($nums); $i++){
@@ -213,7 +212,6 @@ class CalendarController extends BaseController
                 }
                 $arr[$k] += 1;
             }
-    
         }
 
         function detectCapitalUse($word) {
@@ -388,6 +386,230 @@ class CalendarController extends BaseController
         // $target = 2;
         // searchInsert($nums, $target);
 
+        function singleNumber($nums) {
+            $arr = []; 
+    
+            foreach($nums as $key=>$val) {
+                if(isset($arr[$val])){
+                    unset($arr[$val]);
+                } else {
+                    $arr[$val] = $key; 
+                } 
+            } 
+            return array_key_first($arr);
+        }
+        $nums = [1,2,4,4,1,5,2];
+        singleNumber($nums);
+
+        function singleNonDuplicate($nums) {
+            $nums = array_count_values($nums);
+            foreach($nums as $i => $num){
+                if($num == 1){
+                    return $i;
+                }
+            }
+        }
+
+        function singleNonDuplicate2($nums) {
+            $high = count($nums) - 1; // 2
+            $low = 0;
+    
+            if($high == $low) {
+                return $nums[0];
+            } else if($nums[0] != $nums[1]) {
+                return $nums[0];
+            }
+    
+            while($low < $high) {
+                $pivot = floor(($low + $high) / 2); // 1
+                if($low == $pivot) {
+                    $pivot++; // 2
+                }
+    
+                $now_val = $nums[$pivot]; // 1=>1
+                if($now_val != $nums[$pivot-1] && $now_val != $nums[$pivot+1]) {
+                    return $now_val; 
+                } else if($pivot % 2 == 1) { 
+                    if($nums[$pivot] == $nums[$pivot-1]) {
+                        $low = $pivot; // 1
+                    } else {
+                        $high = $pivot;
+                    }
+                } else {
+                    if($nums[$pivot] == $nums[$pivot+1]) {
+                        $low = $pivot; 
+                    } else {
+                        $high = $pivot;
+                    }
+                }
+            }
+    
+        }
+
+        // $nums = [1,1,2];
+        // singleNonDuplicate2($nums);
+
+        function sortPeople($names, $heights) {
+            $temp = [];
+            for ($i=0; $i < count($names); $i++) { 
+                $temp[$heights[$i]] = $names[$i]; 
+            }
+            krsort($temp);
+            return $temp;
+        }
+        // $names = ["Mary","John","Emma"];
+        // $heights = [180,165,180];
+        // sortPeople($names,$heights);
+
+        function frequencySort($nums)
+        {
+            $nums = array_map(function ($val){return (string) $val;},$nums);
+            $vals =  array_count_values($nums);
+            asort($vals); // 5=>1, 1=>1, 2=>2, 3=>2, 4=>2
+            
+            $tmp = [];
+            foreach ($vals as $val => $v_count) {
+                $tmp[$v_count][] = $val; 
+                // [1][0]->5, [1][1]->1, [2][0]->2, [2][1]->3, [2][2]->4
+            }
+
+            $temp = [];
+            foreach ($tmp as $counts => $val) {
+                rsort($val); // 5,1 -> 5,1     // 2,3,4 -> 4,3,2
+                foreach ($val as $v) {
+                    for ($i=0; $i < $counts; $i++) {
+                        $temp[] = $v; // 5,1,4,4,3,3,2,2
+                    }
+                }
+            }
+            return $temp;
+        }
+        // $nums = [5,2,3,1,3,2,4,4];
+        // frequencySort($nums);
+
+        function frequencySort2($nums) {
+            $nums = array_count_values($nums);
+            krsort($nums);
+            asort($nums);
+            
+            $arr = [];
+            foreach ($nums as $key => $value) {
+                for ($i = 0; $i < $value; $i++) {
+                    $arr[] = $key;
+                }
+            }
+            return $arr;
+        }
+        // $nums = [5,2,3,1,3,2,4,4];
+        // frequencySort2($nums);
+
+        function shipWithinDays($weights, $days) {
+            $left = 0;
+            $right = 0;
+            $cnt = count($weights);
+
+            for($i=0; $i<$cnt; $i++){
+                $left = max($left, $weights[$i]);
+                $right += $weights[$i];
+            }
+
+            while($left < $right){
+                $mid = floor(($left + $right) / 2);
+                $currWeight = 0;
+                $req = 1;
+                for($i=0; $i<$cnt; $i++){
+                    if($currWeight + $weights[$i] > $mid){
+                        $req++;
+                        $currWeight = 0;
+                    }
+                    $currWeight += $weights[$i];
+                }
+                if($req > $days) $left = $mid + 1;
+                else $right = $mid;
+            }
+            return $left;
+        }
+
+        function shipWithinDays2($weights, $days) {
+            $high = array_sum($weights); // 6
+            $low = max($weights); // 3
+            
+            while($low < $high) {
+                $target = floor(($high + $low) / 2); // 4
+                $day_count = 1;
+                $now = 0;
+
+                foreach($weights as $weight) {
+                    if($weight + $now > $target) { // 1>4
+                        $day_count++;
+                        $now = $weight;
+                    } else {
+                        $now += $weight; // 1+2
+                    }
+                }
+
+                if($day_count > $days) {
+                    if($low == $target) { 
+                        return $high;
+                    }
+                    $low = $target;
+                } else {
+                    $high = $target; // 4
+                }
+            }
+            return $target;
+        }
+        // $weights = [1,2,3];
+        // $days = 2;
+        // shipWithinDays($weights,$days);
+
+        function rotate(&$matrix) {
+            $n = count($matrix); // 3
+            for ($i=0; $i<floor(($n+1)/2); $i++) { // 0<2
+                for ($j=0; $j<floor($n/2); $j++) { // 0<1
+                    $temp = $matrix[$n-1-$j][$i]; // [2][0] => [0][0]->7
+                    $matrix[$n-1-$j][$i] = $matrix[$n-1-$i][$n-$j-1]; // [2][0]->9
+                    $matrix[$n-1-$i][$n-$j-1] = $matrix[$j][$n-1-$i]; // [2][2]->3
+                    $matrix[$j][$n-1-$i] = $matrix[$i][$j]; // [0][2]->1
+                    $matrix[$i][$j] = $temp; // [0][0]->7
+                }
+            }   
+        }
+        // $matrix = [[1,2,3],[4,5,6],[7,8,9]];
+        // rotate($matrix);
+
+        function isValid($s) {
+            $brackets = array(
+                '(' => ')',
+                '[' => ']',
+                '{' => '}',
+            );
+            $s_arr = str_split($s);
+            $length = count($s_arr);
+    
+            if($length % 2 == 1){
+                return false;
+            }
+    
+            $tmp = [];
+            foreach($s_arr as $i => $s){
+                if(isset($brackets[$s])){
+                    $tmp[] = $s;
+                } else {
+                    $last = array_pop($tmp);
+                    if($s != $brackets[$last]){
+                        return false;
+                    }
+                }
+            }
+            if($tmp){
+                return false;
+            }
+            return true;
+        }
+        // $s = "((";
+        // isValid($s);
+        
         return view('calendar.calendar_view', $data);
     }
 
